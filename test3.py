@@ -4,8 +4,6 @@ class BTreeNode:
         self.keys = []
         self.child = []
 
-
-# Tree
 class BTree:
     def __init__(self, t):
         self.root = BTreeNode(True)
@@ -68,6 +66,16 @@ class BTree:
             z.child = y.child[t : 2 * t]
             y.child = y.child[0 : t - 1]
 
+    def __len__(self, x, l = 0):
+        if len(x.child) == 0:
+            return len(x.keys)
+        else:
+            count = 0
+            for i in x.child:
+                count += self.__len__(i, l)
+            return count + len(x.keys)
+        
+
     # Print the tree
     def print_tree(self, x, l=0):
         print("Level ", l, " ", len(x.keys), end=":")
@@ -98,21 +106,19 @@ def main():
     inp = list(map(int, input().split("/")))
     B = BTree(3)
     MAX_BUS = 4
-    max_rooms = sum(inp)
+    max_rooms = sum(inp) * 2
     for i in range(max_rooms):
+        # if i % MAX_BUS == 0:
+        #     B.insert((i + 1, 0))
+        #     continue
         for j in range(MAX_BUS):
             if inp[j] > 0:
                 inp[j] -= 1
-                B.insert((i + 1, j))
-        
+                B.insert((i + 1, j + 1))
+                break
 
     B.print_tree(B.root)
-
-    # if B.search_key(9) is not None:
-    #     print("\nFound")
-    # else:
-    #     print("\nNot Found")
-
+    print(B.__len__(B.root))
 
 if __name__ == "__main__":
     main()
