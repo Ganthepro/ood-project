@@ -1,84 +1,199 @@
-# Inserting a key on a B-tree in Python
+class Queue:
+    def __init__(self) -> None:
+        self.items = []
 
+    def enqueue(self, data):
+        self.items.append(data)
 
-# Create a node
-class BTreeNode:
-    def __init__(self, leaf=False):
-        self.leaf = leaf
-        self.keys = []
-        self.child = []
+    def dequeue(self):
+        t = self.items[0]
+        self.items.pop(0)
+        return t
+    
+    def is_empty(self):
+        return len(self.items) == 0
+    
+class Room:
+    def __init__(self, n, g) -> None:
+        self.n = n
+        self.g = g
 
+    def __str__(self) -> str:
+        return f"{self.n}, {self.g}"
 
-# Tree
-class BTree:
-    def __init__(self, t):
-        self.root = BTreeNode(True)
-        self.t = t
+class AVLNode:
+    def __init__(self, data):
+        self.data: Room = data
+        self.left = None
+        self.right = None
+        self.height = self.set_height()
 
-    # Insert node
-    def insert(self, k):
-        root = self.root
-        if len(root.keys) == (2 * self.t) - 1:
-            temp = BTreeNode()
-            self.root = temp
-            temp.child.insert(0, root)
-            self.split_child(temp, 0)
-            self.insert_non_full(temp, k)
+    def get_height(self, node):
+        return node.height if node else -1
+    
+    def get_balance(self, node):
+        return self.get_height(node.left) - self.get_height(node.right)
+    
+    def set_height(self):
+        self.height = 1 + max(self.get_height(self.left), self.get_height(self.right))
+        return self.height
+    
+class AVLTree:
+    def __init__(self) -> None:
+        self.root = None
+
+    def insert(self, root, data: Room):
+        if self.root is None:
+            self.root = AVLNode(data)
+            return self.root
         else:
-            self.insert_non_full(root, k)
+            if root is None:
+                return AVLNode(data)
+            if data.n < root.data.n:
+                root.left = self.insert(root.left, data)
+            else:
+                root.right = self.insert(root.right, data)
+            return self.rebalance(root)
+        
+    def rebalance(self, root):
+        balance = root.get_balance(root)
+        if balance == 2:
+            if root.get_balance(root.left) == -1:
+                root.left = self.rotate_left(root.left)
+            root = self.rotate_right(root)
+        elif balance == -2:
+            if root.get_balance(root.right) == 1:
+                root.right = self.rotate_right(root.right)
+            root = self.rotate_left(root)
+        root.set_height()
+        return root
+    
+    def rotate_right(self, root):
+        new_root = root.left
+        root.left = new_root.right
+        new_root.right = root
+        root.set_height()
+        new_root.set_height()
+        return new_root
+    
+    def rotate_left(self, root):
+        new_root = root.right
+        root.right = new_root.left
+        new_root.left = root
+        root.set_height()
+        new_root.set_height()
+        return new_root
+    
+    def __len__(self):
+        if self.root is None:
+            return 0
+        q = Queue()
+        q.enqueue(self.root)
+        l = 0
+        while not q.is_empty():
+            n = q.dequeue()
+            l += 1
+            if n.left:
+                q.enqueue(n.left)
+            if n.right:
+                q.enqueue(n.right)
+        return l
 
-    # Insert nonfull
-    def insert_non_full(self, x, k):
-        i = len(x.keys) - 1
-        if x.leaf:
-            x.keys.append((None, None))
-            while i >= 0 and k[0] < x.keys[i][0]:
-                x.keys[i + 1] = x.keys[i]
-                i -= 1
-            x.keys[i + 1] = k
+    def printTree90(self, node, level = 0):
+        if node != None:
+            self.printTree90(node.right, level + 1)
+            print('     ' * level, node.data)
+            self.printTree90(node.left, level + 1)
+
+    def find_successor(self, root, flag = False):
+        if not flag and root.right is not None:
+            return self.find_successor(root.right, True)
+        if root.left is None:
+            return root
+        return self.find_successor(root.left, flag)
+
+    def delete(self, root, data):
+        if root is None:
+            return root
+        if root.data.n > data:
+            root.left = self.delete(root.left, data)
+        elif root.data.n < data:
+            root.right = self.delete(root.right, data)
         else:
-            while i >= 0 and k[0] < x.keys[i][0]:
-                i -= 1
-            i += 1
-            if len(x.child[i].keys) == (2 * self.t) - 1:
-                self.split_child(x, i)
-                if k[0] > x.keys[i][0]:
-                    i += 1
-            self.insert_non_full(x.child[i], k)
-
-    # Split the child
-    def split_child(self, x, i):
-        t = self.t
-        y = x.child[i]
-        z = BTreeNode(y.leaf)
-        x.child.insert(i + 1, z)
-        x.keys.insert(i, y.keys[t - 1])
-        z.keys = y.keys[t : (2 * t) - 1]
-        y.keys = y.keys[0 : t - 1]
-        if not y.leaf:
-            z.child = y.child[t : 2 * t]
-            y.child = y.child[0 : t - 1]
-
-    # Print the tree
-    def print_tree(self, x, l=0):
-        print("Level ", l, " ", len(x.keys), end=":")
-        for i in x.keys:
-            print(i[0], end=" ")
-        print()
-        l += 1
-        if len(x.child) > 0:
-            for i in x.child:
-                self.print_tree(i, l)
-
-
-def main():
-    B = BTree(4)
-
-    for i in range(20):
-        B.insert((i, 0))
-
-    B.print_tree(B.root)
-
+            if root.left is None:
+                return root.right
+            if root.right is None:
+                return root.left
+            succ = self.find_successor(root)
+            root.data.n = succ.data.n
+            root.right = self.delete(root.right, succ.data.n)
+        return self.rebalance(root)
+    
+    def __str__(self) -> str:
+        lines = AVLTree._build_tree_string(self.root, 0, False, "-")[0]
+        return "\n" + "\n".join((line.rstrip() for line in lines))
+    
+    def _build_tree_string(
+        root: AVLNode,
+        curr_index: int,
+        include_index: bool = False,
+        delimiter: str = "-") :
+        if root is None:
+            return [], 0, 0, 0
+        line1 = []
+        line2 = []
+        if include_index:
+            node_repr = "{}{}{}".format(curr_index, delimiter, root.data)
+        else:
+            node_repr = str(root.data)
+        new_root_width = gap_size = len(node_repr)
+        l_box, l_box_width, l_root_start, l_root_end = AVLTree._build_tree_string(root.left, 2 * curr_index + 1, include_index, delimiter)
+        r_box, r_box_width, r_root_start, r_root_end = AVLTree._build_tree_string(root.right, 2 * curr_index + 2, include_index, delimiter)
+        if l_box_width > 0:
+            l_root = (l_root_start + l_root_end) // 2 + 1
+            line1.append(" " * (l_root + 1))
+            line1.append("_" * (l_box_width - l_root))
+            line2.append(" " * l_root + "/")
+            line2.append(" " * (l_box_width - l_root))
+            new_root_start = l_box_width + 1
+            gap_size += 1
+        else:
+            new_root_start = 0
+        line1.append(node_repr)
+        line2.append(" " * new_root_width)
+        if r_box_width > 0:
+            r_root = (r_root_start + r_root_end) // 2
+            line1.append("_" * r_root)
+            line1.append(" " * (r_box_width - r_root + 1))
+            line2.append(" " * r_root + "\\")
+            line2.append(" " * (r_box_width - r_root))
+            gap_size += 1
+        new_root_end = new_root_start + new_root_width - 1
+        gap = " " * gap_size
+        new_box = ["".join(line1), "".join(line2)]
+        for i in range(max(len(l_box), len(r_box))):
+            l_line = l_box[i] if i < len(l_box) else " " * l_box_width
+            r_line = r_box[i] if i < len(r_box) else " " * r_box_width
+            new_box.append(l_line + gap + r_line)
+        return new_box, len(new_box[0]), new_root_start, new_root_end
+    
+def inserts(inp: list, avl: AVLTree):
+    lst = inp.copy()
+    lst.insert(0, max(lst))
+    LEN = len(lst)
+    i = 0
+    j = len(avl)
+    while any(n > 0 for n in lst):
+        if lst[i] > 0:
+            lst[i] -= 1
+            avl.root = avl.insert(avl.root, Room(j, i))
+            j += 1
+        i = (i + 1) % LEN
+    return avl.root
 
 if __name__ == "__main__":
-    main()
+    avl = AVLTree()
+    inp = list(map(int, input().split("/")))
+    avl.root = inserts(inp, avl)
+    print(avl)
+    print(len(avl))
