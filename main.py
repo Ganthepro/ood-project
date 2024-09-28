@@ -191,7 +191,7 @@ def inserts(inp: list, avl: AVLTree):
         i = (i + 1) % LEN
     return avl.root
 
-def Sign(text = None):
+def sign(text = None):
     if text is None:
         text = "Welcome to Infinity Hotel"
     gap = " "
@@ -200,8 +200,8 @@ def Sign(text = None):
     print(f"|{text:^46}|")
     print(f"|{gap:^46}|")
     print("="*48)
-def frontProgram():
-    Sign()
+def front_program():
+    sign()
     print("กรอกจำนวนห้องพักด้วยค่าตั้งแต่ 1 ถึง N (4 cars is default)")
     car1 = input("Car 1\n-> ")
     car2 = input("Car 2\n-> ")
@@ -223,8 +223,20 @@ def frontProgram():
         output += f"/{car}"
     return output
 
-def Program():
-    Sign("How may I assist you today?")    
+
+def print_tree():
+    '''Print'''
+def find_room():
+    ''''''
+def delete_room():
+    ''''''
+def total_room():
+    ''''''
+def empty_room():
+    ''''''
+
+def program():
+    sign("How may I assist you today?")    
     choice = 6
     while choice > 0:
         print("1 | Print Tree")
@@ -235,21 +247,15 @@ def Program():
         print("0 | Exit")
         choice = int(input("-> "))
         if choice == 1:
-            print("AVL Tree:")
-            avl.printTree90(avl.root)
+            print_tree()
         elif choice == 2:
-            room = int(input("Enter Room Number: "))
-            # print(f"Room {room} is available: {avl.find(avl.root, room).data.is_available}")
+            find_room()
         elif choice == 3:
-            room = int(input("Enter Room Number: "))
-            # avl.root = avl.delete(avl.root, room)
+            delete_room()
         elif choice == 4:
-            ''''''
-            print(f"Total Rooms: {len(avl)}")
+            total_room()
         elif choice == 5:
-            ''''''
-            print(f"Empty Rooms: {len(avl)}")
-            # print(f"Total Available Rooms: {len([room for room in avl if room.data.is_available])}")
+            empty_room()
         else:
             print("Exiting...")
             break
@@ -258,8 +264,8 @@ def Program():
 
 if __name__ == "__main__":
     avl = AVLTree()
-    inp = list(map(int, frontProgram().split("/")))
+    inp = list(map(int, front_program().split("/")))
     avl.root = inserts(inp, avl)
     print(avl)
     print(len(avl))
-    Program()
+    program()
