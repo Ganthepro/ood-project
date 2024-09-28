@@ -19,7 +19,7 @@ class Room:
         self.g = g
 
     def __str__(self) -> str:
-        return f"{self.n},{self.g}"
+        return f"{self.n}, {self.g}"
 class AVLNode:
     def __init__(self, data):
         self.data: Room = data
