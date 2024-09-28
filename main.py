@@ -20,7 +20,6 @@ class Room:
 
     def __str__(self) -> str:
         return f"{self.n}, {self.g}"
-
 class AVLNode:
     def __init__(self, data):
         self.data: Room = data
@@ -194,6 +193,58 @@ class AVLTree:
             r_line = r_box[i] if i < len(r_box) else " " * r_box_width
             new_box.append(l_line + gap + r_line)
         return new_box, len(new_box[0]), new_root_start, new_root_end
+    
+    def search(self, root, data):
+        if root is None:
+            return False
+        if root.data.n == data:
+            return True
+        if root.data.n > data:
+            return self.search(root.left, data)
+        return self.search(root.right, data)
+    
+    def get_max_room(self, root):
+        if root.right is None:
+            return root.data.n
+        return self.get_max_room(root.right)
+
+    def missing_room_count(self, root):
+        if root is None:
+            return 0
+        return self.get_max_room(root) - len(self) + 1
+    
+    def find_missing_rooms(self, root) -> list:
+        if root is None:
+            return []
+        
+        missing_rooms = []
+        current_room = 0
+        max_room = self.get_max_room(root)
+
+        def inorder_traversal(node):
+            nonlocal current_room
+            if node is None:
+                return
+
+            inorder_traversal(node.left)
+
+            while current_room < node.data.n:
+                missing_rooms.append(current_room)
+                current_room += 1
+
+            current_room = node.data.n + 1
+
+            inorder_traversal(node.right)
+        
+        inorder_traversal(root)
+
+        while current_room < max_room:
+            missing_rooms.append(current_room)
+            current_room += 1
+        
+        return missing_rooms
+
+
     
 def inserts(inp: list, avl: AVLTree):
     lst = inp.copy()
