@@ -131,7 +131,25 @@ class AVLTree:
     def __str__(self) -> str:
         lines = AVLTree._build_tree_string(self.root, 0, False, "-")[0]
         return "\n" + "\n".join((line.rstrip() for line in lines))
-    
+
+    def write_file(self, filename="output.txt"):
+        traversal_result = []
+        self._inorder_traversal(self.root, traversal_result)
+        result_str = "no_" + "_".join(traversal_result)
+        
+        with open(filename, "w") as f:
+            f.write(result_str)
+
+    def _inorder_traversal(self, node, traversal_result):
+        if node:
+            self._inorder_traversal(node.left, traversal_result)
+
+            """ Uncomment for displaying number of room corresponding to it's group """
+            # traversal_result.append(f"no{node.data.n}_{node.data.g}") 
+            traversal_result.append(f"{node.data.g}")
+            self._inorder_traversal(node.right, traversal_result)
+            
+
     def _build_tree_string(
         root: AVLNode,
         curr_index: int,
@@ -248,3 +266,5 @@ if __name__ == "__main__":
     avl.root = inserts(inp, avl)
     print(avl)
     print(len(avl))
+
+    avl.write_file("output.txt")
