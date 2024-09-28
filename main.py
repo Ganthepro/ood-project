@@ -191,9 +191,41 @@ def inserts(inp: list, avl: AVLTree):
         i = (i + 1) % LEN
     return avl.root
 
+def Sign(text = None):
+    if text is None:
+        text = "Welcome to Infinity Hotel"
+    gap = " "
+    print("="*48)
+    print(f"|{gap:^46}|")
+    print(f"|{text:^46}|")
+    print(f"|{gap:^46}|")
+    print("="*48)
+def frontProgram():
+    Sign()
+    print("กรอกจำนวนห้องพักด้วยค่าตั้งแต่ 1 ถึง N (4 cars is default)")
+    car1 = input("Car 1 :")
+    car2 = input("Car 2 :")
+    car3 = input("Car 3 :")
+    car4 = input("Car 4 :")
+    cars = [car2, car3, car4]
+    number = 5
+    print("Add more car ? (Y/N)")    
+    add = True if input("-> ") == "Y" else False
+    while add:
+        car = input(f"Car {number}:")
+        cars.append(car)
+        print("Add more car ? (Y/N)")    
+        add = True if input("->") == "Y" else False
+    
+    print("Welcome to Infinity Hotel โรงแรมไร้ขีดจำกัด")
+    output = car1
+    for car in cars:
+        output += f"/{car}"
+    return output
+
 if __name__ == "__main__":
     avl = AVLTree()
-    inp = list(map(int, input().split("/")))
+    inp = list(map(int, frontProgram().split("/")))
     avl.root = inserts(inp, avl)
     print(avl)
     print(len(avl))
