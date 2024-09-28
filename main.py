@@ -203,10 +203,10 @@ def Sign(text = None):
 def frontProgram():
     Sign()
     print("กรอกจำนวนห้องพักด้วยค่าตั้งแต่ 1 ถึง N (4 cars is default)")
-    car1 = input("Car 1 :")
-    car2 = input("Car 2 :")
-    car3 = input("Car 3 :")
-    car4 = input("Car 4 :")
+    car1 = input("Car 1\n-> ")
+    car2 = input("Car 2\n-> ")
+    car3 = input("Car 3\n-> ")
+    car4 = input("Car 4\n-> ")
     cars = [car2, car3, car4]
     number = 5
     print("Add more car ? (Y/N)")    
@@ -223,9 +223,43 @@ def frontProgram():
         output += f"/{car}"
     return output
 
+def Program():
+    Sign("How may I assist you today?")    
+    choice = 6
+    while choice > 0:
+        print("1 | Print Tree")
+        print("2 | Find Room")
+        print("3 | Delete Room")
+        print("4 | Count Room")
+        print("5 | Empty Room")
+        print("0 | Exit")
+        choice = int(input("-> "))
+        if choice == 1:
+            print("AVL Tree:")
+            avl.printTree90(avl.root)
+        elif choice == 2:
+            room = int(input("Enter Room Number: "))
+            # print(f"Room {room} is available: {avl.find(avl.root, room).data.is_available}")
+        elif choice == 3:
+            room = int(input("Enter Room Number: "))
+            # avl.root = avl.delete(avl.root, room)
+        elif choice == 4:
+            ''''''
+            print(f"Total Rooms: {len(avl)}")
+        elif choice == 5:
+            ''''''
+            print(f"Empty Rooms: {len(avl)}")
+            # print(f"Total Available Rooms: {len([room for room in avl if room.data.is_available])}")
+        else:
+            print("Exiting...")
+            break
+        print()
+
+
 if __name__ == "__main__":
     avl = AVLTree()
     inp = list(map(int, frontProgram().split("/")))
     avl.root = inserts(inp, avl)
     print(avl)
     print(len(avl))
+    Program()
