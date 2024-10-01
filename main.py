@@ -20,8 +20,8 @@ class Room:
         self.group = group
 
     def __str__(self) -> str:
-        return f"{self.room_num}, {self.group}"
-
+        # return f"{self.room_num}, {self.group}"
+        return f"{self.room_num}"
 
 class AVLNode:
     def __init__(self, data):
@@ -252,19 +252,28 @@ class AVLTree:
         return missing_rooms
 
 
-def inserts(inp: list, avl: AVLTree):
-    lst = inp.copy()
-    LEN = len(lst)
-    i = 0
-    j = len(avl)
-    while any(n > 0 for n in lst):
-        if lst[i] > 0:
-            lst[i] -= 1
-            avl.root = avl.insert(avl.root, Room(j, i))
-            j += 1
-        i = (i + 1) % LEN
-    return avl.root
+# def inserts(inp: list, avl: AVLTree):
+#     lst = inp.copy()
+#     LEN = len(lst)
+#     i = 0
+#     j = len(avl)
+#     while any(n > 0 for n in lst):
+#         if lst[i] > 0:
+#             lst[i] -= 1
+#             avl.root = avl.insert(avl.root, Room(j, i))
+#             j += 1
+#         i = (i + 1) % LEN
+#     return avl.root
 
+def inserts(inp: list, avl: AVLTree):
+    for i in range(inp[0]):
+        for j in range(inp[1]):
+            for k in range(inp[2]):
+                for l in range(inp[3]):
+                    for m in range(inp[4]):
+                        room_num = (2 ** m) * (3 ** l) * (5 ** k) * (7 ** j) * (11 ** i)
+                        avl.root = avl.insert(avl.root, Room(room_num, (i, j, k, l, m)))
+    return avl.root
 
 if __name__ == "__main__":
     avl = AVLTree()
@@ -272,14 +281,14 @@ if __name__ == "__main__":
     avl.root = inserts(inp, avl)
     print(avl)
     print(len(avl))
-    avl.root = avl.delete(avl.root, 16)
-    avl.root = avl.delete(avl.root, 24)
-    avl.root = avl.delete(avl.root, 5)
-    print(avl)
-    print(len(avl))
-    avl.root = avl.insert(avl.root, Room(16, 1))
-    print(avl)
-    print(len(avl))
-    print(avl.find_missing_rooms(avl.root))
+    # avl.root = avl.delete(avl.root, 16)
+    # avl.root = avl.delete(avl.root, 24)
+    # avl.root = avl.delete(avl.root, 5)
+    # print(avl)
+    # print(len(avl))
+    # avl.root = avl.insert(avl.root, Room(16, 1))
+    # print(avl)
+    # print(len(avl))
+    # print(avl.find_missing_rooms(avl.root))
 
-    avl.write_file("output.txt")
+    # avl.write_file("output.txt")
