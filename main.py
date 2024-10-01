@@ -17,7 +17,7 @@ class Room:
     def __init__(self, n, g) -> None:
         self.n = n
         self.g = g
-        self.desc = "new_commer" if int(g) != 0 else "pre_existed"
+        self.desc = "newcomer" if int(g) != 0 else "pre_existed"
 
     def __str__(self) -> str:
         return f"{self.n}, {self.g}"
