@@ -15,9 +15,10 @@ class Queue:
 
 
 class Room:
-    def __init__(self, room_num, group) -> None:
-        self.room_num = room_num
-        self.group = group
+    def __init__(self, n, g) -> None:
+        self.n = n
+        self.g = g
+        self.desc = "newcomer" if int(g) != 0 else "pre_existed"
 
     def __str__(self) -> str:
         return f"{self.room_num}, {self.group}"
@@ -144,8 +145,8 @@ class AVLTree:
     def write_file(self, filename="output.txt"):
         traversal_result = []
         self._inorder_traversal(self.root, traversal_result)
-        result_str = "no_" + "_".join(traversal_result)
-
+        result_str = "\n".join(traversal_result)
+        
         with open(filename, "w") as f:
             f.write(result_str)
 
@@ -153,9 +154,8 @@ class AVLTree:
         if node:
             self._inorder_traversal(node.left, traversal_result)
 
-            """ Uncomment for displaying number of room corresponding to it's group """
-            # traversal_result.append(f"no{node.data.room_num}_{node.data.g}")
-            traversal_result.append(f"{node.data.group}")
+            """ Displaying number of room corresponding to it's group | Ex: room number: 0, group: 0, description: pre_existed"""
+            traversal_result.append(f"room number: {node.data.n}, group: {node.data.g}, description: {node.data.desc}") 
             self._inorder_traversal(node.right, traversal_result)
 
     def _build_tree_string(
