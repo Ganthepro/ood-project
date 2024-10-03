@@ -15,14 +15,14 @@ class Queue:
 
 
 class Room:
-    def __init__(self, n, g) -> None:
-        self.n = n
-        self.g = g
-        self.desc = "newcomer" if int(g) != 0 else "pre_existed"
+    def __init__(self, room_num, group) -> None:
+        self.room_num = room_num
+        self.group = group
+        # self.desc = "newcomer" if int(group) != 0 else "pre_existed"
 
     def __str__(self) -> str:
-        # return f"{self.room_num}, {self.group}"
-        return f"{self.room_num}"
+        return f"{self.room_num}, {self.group}"
+        # return f"{self.room_num}"
 
 class AVLNode:
     def __init__(self, data):
@@ -155,7 +155,7 @@ class AVLTree:
             self._inorder_traversal(node.left, traversal_result)
 
             """ Displaying number of room corresponding to it's group | Ex: room number: 0, group: 0, description: pre_existed"""
-            traversal_result.append(f"room number: {node.data.n}, group: {node.data.g}, description: {node.data.desc}") 
+            traversal_result.append(f"room number: {node.data.room_num}, group: {node.data.group}, description: {node.data.desc}") 
             self._inorder_traversal(node.right, traversal_result)
 
     def _build_tree_string(
@@ -252,13 +252,21 @@ class AVLTree:
         return missing_rooms
 
 def inserts(inp: list, avl: AVLTree):
-    for i in range(inp[0]):
-        for j in range(inp[1]):
-            for k in range(inp[2]):
-                for l in range(inp[3]):
-                    for m in range(inp[4]):
-                        room_num = (2 ** m) * (3 ** l) * (5 ** k) * (7 ** j) * (11 ** i)
-                        avl.root = avl.insert(avl.root, Room(room_num, (i, j, k, l, m)))
+    existed_room_count = 0
+    for i in range(inp[1]):
+        for j in range(inp[2]):
+            for k in range(inp[3]):
+                for l in range(inp[4]):
+                    room_num = (3 ** l) * (5 ** k) * (7 ** j) * (11 ** i)
+                    avl.root = avl.insert(avl.root, Room(room_num, (i, j, k, l)))
+        if inp[0] > 0:
+            existed_room_count += 1
+            avl.root = avl.insert(avl.root, Room(room_num * (2 ** existed_room_count), (0)))
+            inp[0] -= 1
+    if inp[0] > 0:
+        for i in range(inp[0]):
+            avl.root = avl.insert(avl.root, Room(avl.get_max_room(avl.root) + 1, (0)))
+    print(inp[0])
     return avl.root
 
 if __name__ == "__main__":
