@@ -251,20 +251,6 @@ class AVLTree:
 
         return missing_rooms
 
-
-# def inserts(inp: list, avl: AVLTree):
-#     lst = inp.copy()
-#     LEN = len(lst)
-#     i = 0
-#     j = len(avl)
-#     while any(n > 0 for n in lst):
-#         if lst[i] > 0:
-#             lst[i] -= 1
-#             avl.root = avl.insert(avl.root, Room(j, i))
-#             j += 1
-#         i = (i + 1) % LEN
-#     return avl.root
-
 def inserts(inp: list, avl: AVLTree):
     for i in range(inp[0]):
         for j in range(inp[1]):
