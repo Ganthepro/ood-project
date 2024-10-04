@@ -81,7 +81,6 @@ class AVLTree:
             root = self.rotate_left(root)
         root.set_height()
         return root
-
     
     def rotate_right(self, root):
         new_root = root.left
@@ -91,7 +90,6 @@ class AVLTree:
         new_root.set_height()
         return new_root
 
-
     def rotate_left(self, root):
         new_root = root.right
         root.right = new_root.left
@@ -99,7 +97,6 @@ class AVLTree:
         root.set_height()
         new_root.set_height()
         return new_root
-
 
     def __len__(self):
         if self.root is None:
@@ -115,6 +112,7 @@ class AVLTree:
             if n.right:
                 q.enqueue(n.right)
         return l
+    
     def printTree90(self, node, level=0):
         if node != None:
             self.printTree90(node.right, level + 1)
@@ -128,6 +126,7 @@ class AVLTree:
             return root
         return self.find_successor(root.left, flag)
 
+    @timeit
     def delete(self, root, data):
         if root is None:
             return root
@@ -224,20 +223,20 @@ class AVLTree:
             return self.search(root.left, room_num)
         return self.search(root.right, room_num)
 
-    @timeit
+    # @timeit
     def get_max_room(self, root):
         if root.right is None:
             return root.data.room_num
         return self.get_max_room(root.right)
 
-    @timeit
+    # @timeit
     def missing_room_count(self, root):
         if root is None:
             return 0
         result = self.get_max_room(root) - len(self) + 1
         return result
 
-    @timeit
+    # @timeit
     def find_missing_rooms(self, root) -> list:
         if root is None:
             return []
@@ -281,17 +280,15 @@ def inserts(inp: list, avl: AVLTree):
     if inp[0] > 0:
         for i in range(inp[0]):
             avl.root = avl.insert(avl.root, Room(avl.get_max_room(avl.root) + 1, (0)))
-    print(inp[0])
     return avl.root
 
-
-if __name__ == "__main__":
-    start_time_main = time.time()
+@timeit
+def main():
     avl = AVLTree()
     inp = list(map(int, input().split("/")))
     avl.root = inserts(inp, avl)
     print(avl)
     print(len(avl))
-    
-    end_time_main = time.time() 
-    print(f"Total execution time in main function: {end_time_main - start_time_main:.6f} seconds")
+
+if __name__ == "__main__":
+    main()
