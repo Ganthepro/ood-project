@@ -115,7 +115,105 @@ class AVLTree:
             if n.right:
                 q.enqueue(n.right)
         return l
+    def printTree90(self, node, level=0):
+            if node != None:
+                self.printTree90(node.right, level + 1)
+                print("     " * level, node.data)
+                self.printTree90(node.left, level + 1)
 
+    def find_successor(self, root, flag=False):
+        if not flag and root.right is not None:
+            return self.find_successor(root.right, True)
+        if root.left is None:
+            return root
+        return self.find_successor(root.left, flag)
+
+    def delete(self, root, data):
+        if root is None:
+            return root
+        if root.data.room_num > data:
+            root.left = self.delete(root.left, data)
+        elif root.data.room_num < data:
+            root.right = self.delete(root.right, data)
+        else:
+            if root.left is None:
+                return root.right
+            if root.right is None:
+                return root.left
+            succ = self.find_successor(root)
+            root.data.room_num = succ.data.room_num
+            root.right = self.delete(root.right, succ.data.room_num)
+        return self.rebalance(root)
+
+    def __str__(self) -> str:
+        lines = AVLTree._build_tree_string(self.root, 0, False, "-")[0]
+        return "\n" + "\n".join((line.rstrip() for line in lines))
+
+    def write_file(self, filename="output.txt"):
+        traversal_result = []
+        self._inorder_traversal(self.root, traversal_result)
+        result_str = "\n".join(traversal_result)
+        
+        with open(filename, "w") as f:
+            f.write(result_str)
+
+    def _inorder_traversal(self, node, traversal_result):
+        if node:
+            self._inorder_traversal(node.left, traversal_result)
+
+            """ Displaying number of room corresponding to it's group | Ex: room number: 0, group: 0, description: pre_existed"""
+            traversal_result.append(f"room number: {node.data.room_num}, group: {node.data.group}, description: {node.data.desc}") 
+            self._inorder_traversal(node.right, traversal_result)
+
+    def _build_tree_string(
+        root: AVLNode,
+        curr_index: int,
+        include_index: bool = False,
+        delimiter: str = "-",
+    ):
+        if root is None:
+            return [], 0, 0, 0
+        line1 = []
+        line2 = []
+        if include_index:
+            node_repr = "{}{}{}".format(curr_index, delimiter, root.data)
+        else:
+            node_repr = str(root.data)
+        new_root_width = gap_size = len(node_repr)
+        l_box, l_box_width, l_root_start, l_root_end = AVLTree._build_tree_string(
+            root.left, 2 * curr_index + 1, include_index, delimiter
+        )
+        r_box, r_box_width, r_root_start, r_root_end = AVLTree._build_tree_string(
+            root.right, 2 * curr_index + 2, include_index, delimiter
+        )
+        if l_box_width > 0:
+            l_root = (l_root_start + l_root_end) // 2 + 1
+            line1.append(" " * (l_root + 1))
+            line1.append("_" * (l_box_width - l_root))
+            line2.append(" " * l_root + "/")
+            line2.append(" " * (l_box_width - l_root))
+            new_root_start = l_box_width + 1
+            gap_size += 1
+        else:
+            new_root_start = 0
+        line1.append(node_repr)
+        line2.append(" " * new_root_width)
+        if r_box_width > 0:
+            r_root = (r_root_start + r_root_end) // 2
+            line1.append("_" * r_root)
+            line1.append(" " * (r_box_width - r_root + 1))
+            line2.append(" " * r_root + "\\")
+            line2.append(" " * (r_box_width - r_root))
+            gap_size += 1
+        new_root_end = new_root_start + new_root_width - 1
+        gap = " " * gap_size
+        new_box = ["".join(line1), "".join(line2)]
+        for i in range(max(len(l_box), len(r_box))):
+            l_line = l_box[i] if i < len(l_box) else " " * l_box_width
+            r_line = r_box[i] if i < len(r_box) else " " * r_box_width
+            new_box.append(l_line + gap + r_line)
+        return new_box, len(new_box[0]), new_root_start, new_root_end
+    
     @timeit
     def search(self, root, room_num):
         if root is None:
