@@ -60,7 +60,6 @@ class AVLNode:
         self.height = 1 + max(self.get_height(self.left), self.get_height(self.right))
         return self.height
 
-
 class AVLTree:
     def __init__(self) -> None:
         self.root = None
@@ -229,20 +228,17 @@ class AVLTree:
             return self.search(root.left, room_num)
         return self.search(root.right, room_num)
 
-    # @timeit
     def get_max_room(self, root):
         if root.right is None:
             return root.data.room_num
         return self.get_max_room(root.right)
 
-    # @timeit
     def missing_room_count(self, root):
         if root is None:
             return 0
         result = self.get_max_room(root) - len(self) + 1
         return result
 
-    # @timeit
     def find_missing_rooms(self, root) -> list:
         if root is None:
             return []
@@ -272,38 +268,30 @@ class AVLTree:
 
 @timeit
 def inserts(inp: list, avl: AVLTree):
-    existed_room_count = 0
+    for i in range(inp[0]):
+        avl.root = avl.insert(avl.root, Room(2 ** i, (0)))
     for i in range(inp[1]):
         for j in range(inp[2]):
             for k in range(inp[3]):
                 for l in range(inp[4]):
                     room_num = (3 ** l) * (5 ** k) * (7 ** j) * (11 ** i)
                     avl.root = avl.insert(avl.root, Room(room_num, (i, j, k, l)))
-        if inp[0] > 0:
-            existed_room_count += 1
-            avl.root = avl.insert(avl.root, Room(room_num * (2 ** existed_room_count), (0)))
-            inp[0] -= 1
-    if inp[0] > 0:
-        for i in range(inp[0]):
-            avl.root = avl.insert(avl.root, Room(avl.get_max_room(avl.root) + 1, (0)))
     return avl.root
 
-@timeit
 def main():
     avl = AVLTree()
     inp = list(map(int, input().split("/")))
     avl.root = inserts(inp, avl)
+    avl.write_file()
     print(avl)
-    print(len(avl))
     print(f"Memory Usage : {memory_usage(avl)} Bytes")
 
 def memory_usage(avl: AVLTree):
     def node_size(node):
         if node is None:
             return 0
-        return sys.getsizeof(node) + sys.getsizeof(node.data) + node_size(node.left) + node_size(node.right)
+        return sys.getsizeof(node) + node_size(node.left) + node_size(node.right)
     return node_size(avl.root)
-    avl.write_file()
 
 if __name__ == "__main__":
     main()
