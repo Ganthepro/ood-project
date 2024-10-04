@@ -166,7 +166,6 @@ class AVLTree:
 
         return missing_rooms
 
-    # Other methods remain the same...
 
 @timeit
 def inserts(inp: list, avl: AVLTree):
