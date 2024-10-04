@@ -1,3 +1,17 @@
+import time
+from functools import wraps
+
+# Timing decorator
+def timeit(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"{func.__name__} function took {end_time - start_time:.10f} seconds")
+        return result
+    return wrapper
+
 class Queue:
     def __init__(self) -> None:
         self.items = []
@@ -18,11 +32,9 @@ class Room:
     def __init__(self, room_num, group) -> None:
         self.room_num = room_num
         self.group = group
-        # self.desc = "newcomer" if int(group) != 0 else "pre_existed"
 
     def __str__(self) -> str:
         return f"{self.room_num}, {self.group}"
-        # return f"{self.room_num}"
 
 class AVLNode:
     def __init__(self, data):
@@ -46,23 +58,17 @@ class AVLTree:
     def __init__(self) -> None:
         self.root = None
 
-    def insert(self, root, data: Room, is_check=False):
-        if self.root is None:
-            self.root = AVLNode(data)
-            return self.root
+    @timeit
+    def insert(self, root, data: Room):
+        if root is None:
+            return AVLNode(data)
+        if data.room_num == root.data.room_num:
+            return root
+        elif data.room_num < root.data.room_num:
+            root.left = self.insert(root.left, data)
         else:
-            if not is_check:
-                is_existed = self.search(self.root, data.room_num)
-                if is_existed:
-                    return self.root
-                is_check = True
-            if root is None:
-                return AVLNode(data)
-            if data.room_num < root.data.room_num:
-                root.left = self.insert(root.left, data, is_check)
-            else:
-                root.right = self.insert(root.right, data, is_check)
-            return self.rebalance(root)
+            root.right = self.insert(root.right, data)
+        return self.rebalance(root)
 
     def rebalance(self, root):
         balance = root.get_balance(root)
@@ -77,6 +83,7 @@ class AVLTree:
         root.set_height()
         return root
 
+    
     def rotate_right(self, root):
         new_root = root.left
         root.left = new_root.right
@@ -85,6 +92,7 @@ class AVLTree:
         new_root.set_height()
         return new_root
 
+
     def rotate_left(self, root):
         new_root = root.right
         root.right = new_root.left
@@ -92,6 +100,7 @@ class AVLTree:
         root.set_height()
         new_root.set_height()
         return new_root
+
 
     def __len__(self):
         if self.root is None:
@@ -108,105 +117,7 @@ class AVLTree:
                 q.enqueue(n.right)
         return l
 
-    def printTree90(self, node, level=0):
-        if node != None:
-            self.printTree90(node.right, level + 1)
-            print("     " * level, node.data)
-            self.printTree90(node.left, level + 1)
-
-    def find_successor(self, root, flag=False):
-        if not flag and root.right is not None:
-            return self.find_successor(root.right, True)
-        if root.left is None:
-            return root
-        return self.find_successor(root.left, flag)
-
-    def delete(self, root, data):
-        if root is None:
-            return root
-        if root.data.room_num > data:
-            root.left = self.delete(root.left, data)
-        elif root.data.room_num < data:
-            root.right = self.delete(root.right, data)
-        else:
-            if root.left is None:
-                return root.right
-            if root.right is None:
-                return root.left
-            succ = self.find_successor(root)
-            root.data.room_num = succ.data.room_num
-            root.right = self.delete(root.right, succ.data.room_num)
-        return self.rebalance(root)
-
-    def __str__(self) -> str:
-        lines = AVLTree._build_tree_string(self.root, 0, False, "-")[0]
-        return "\n" + "\n".join((line.rstrip() for line in lines))
-
-    def write_file(self, filename="output.txt"):
-        traversal_result = []
-        self._inorder_traversal(self.root, traversal_result)
-        result_str = "\n".join(traversal_result)
-        
-        with open(filename, "w") as f:
-            f.write(result_str)
-
-    def _inorder_traversal(self, node, traversal_result):
-        if node:
-            self._inorder_traversal(node.left, traversal_result)
-
-            """ Displaying number of room corresponding to it's group | Ex: room number: 0, group: 0, description: pre_existed"""
-            traversal_result.append(f"room number: {node.data.room_num}, group: {node.data.group}, description: {node.data.desc}") 
-            self._inorder_traversal(node.right, traversal_result)
-
-    def _build_tree_string(
-        root: AVLNode,
-        curr_index: int,
-        include_index: bool = False,
-        delimiter: str = "-",
-    ):
-        if root is None:
-            return [], 0, 0, 0
-        line1 = []
-        line2 = []
-        if include_index:
-            node_repr = "{}{}{}".format(curr_index, delimiter, root.data)
-        else:
-            node_repr = str(root.data)
-        new_root_width = gap_size = len(node_repr)
-        l_box, l_box_width, l_root_start, l_root_end = AVLTree._build_tree_string(
-            root.left, 2 * curr_index + 1, include_index, delimiter
-        )
-        r_box, r_box_width, r_root_start, r_root_end = AVLTree._build_tree_string(
-            root.right, 2 * curr_index + 2, include_index, delimiter
-        )
-        if l_box_width > 0:
-            l_root = (l_root_start + l_root_end) // 2 + 1
-            line1.append(" " * (l_root + 1))
-            line1.append("_" * (l_box_width - l_root))
-            line2.append(" " * l_root + "/")
-            line2.append(" " * (l_box_width - l_root))
-            new_root_start = l_box_width + 1
-            gap_size += 1
-        else:
-            new_root_start = 0
-        line1.append(node_repr)
-        line2.append(" " * new_root_width)
-        if r_box_width > 0:
-            r_root = (r_root_start + r_root_end) // 2
-            line1.append("_" * r_root)
-            line1.append(" " * (r_box_width - r_root + 1))
-            line2.append(" " * r_root + "\\")
-            line2.append(" " * (r_box_width - r_root))
-            gap_size += 1
-        new_root_end = new_root_start + new_root_width - 1
-        gap = " " * gap_size
-        new_box = ["".join(line1), "".join(line2)]
-        for i in range(max(len(l_box), len(r_box))):
-            l_line = l_box[i] if i < len(l_box) else " " * l_box_width
-            r_line = r_box[i] if i < len(r_box) else " " * r_box_width
-            new_box.append(l_line + gap + r_line)
-        return new_box, len(new_box[0]), new_root_start, new_root_end
-
+    @timeit
     def search(self, root, room_num):
         if root is None:
             return False
@@ -216,16 +127,20 @@ class AVLTree:
             return self.search(root.left, room_num)
         return self.search(root.right, room_num)
 
+    @timeit
     def get_max_room(self, root):
         if root.right is None:
             return root.data.room_num
         return self.get_max_room(root.right)
 
+    @timeit
     def missing_room_count(self, root):
         if root is None:
             return 0
-        return self.get_max_room(root) - len(self) + 1
+        result = self.get_max_room(root) - len(self) + 1
+        return result
 
+    @timeit
     def find_missing_rooms(self, root) -> list:
         if root is None:
             return []
@@ -243,6 +158,7 @@ class AVLTree:
                 current_room += 1
             current_room = node.data.room_num + 1
             inorder_traversal(node.right)
+        
         inorder_traversal(root)
 
         while current_room < max_room:
@@ -251,6 +167,9 @@ class AVLTree:
 
         return missing_rooms
 
+    # Other methods remain the same...
+
+@timeit
 def inserts(inp: list, avl: AVLTree):
     existed_room_count = 0
     for i in range(inp[1]):
@@ -269,20 +188,14 @@ def inserts(inp: list, avl: AVLTree):
     print(inp[0])
     return avl.root
 
+
 if __name__ == "__main__":
+    start_time_main = time.time()
     avl = AVLTree()
     inp = list(map(int, input().split("/")))
     avl.root = inserts(inp, avl)
     print(avl)
     print(len(avl))
-    # avl.root = avl.delete(avl.root, 16)
-    # avl.root = avl.delete(avl.root, 24)
-    # avl.root = avl.delete(avl.root, 5)
-    # print(avl)
-    # print(len(avl))
-    # avl.root = avl.insert(avl.root, Room(16, 1))
-    # print(avl)
-    # print(len(avl))
-    # print(avl.find_missing_rooms(avl.root))
-
-    # avl.write_file("output.txt")
+    
+    end_time_main = time.time() 
+    print(f"Total execution time in main function: {end_time_main - start_time_main:.6f} seconds")
