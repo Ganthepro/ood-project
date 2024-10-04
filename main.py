@@ -116,10 +116,10 @@ class AVLTree:
                 q.enqueue(n.right)
         return l
     def printTree90(self, node, level=0):
-            if node != None:
-                self.printTree90(node.right, level + 1)
-                print("     " * level, node.data)
-                self.printTree90(node.left, level + 1)
+        if node != None:
+            self.printTree90(node.right, level + 1)
+            print("     " * level, node.data)
+            self.printTree90(node.left, level + 1)
 
     def find_successor(self, root, flag=False):
         if not flag and root.right is not None:
