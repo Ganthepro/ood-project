@@ -31,9 +31,17 @@ class Room:
     def __init__(self, room_num, group) -> None:
         self.room_num = room_num
         self.group = group
+        self.desc = 'newcomer' if not isinstance(group, int) else 'pre_existed'
 
     def __str__(self) -> str:
         return f"{self.room_num}, {self.group}"
+    
+    def get_information(self) -> str:
+        if isinstance(self.group, int):
+            return f'roomNo{self.room_num}_{self.group}, {self.desc}'
+        
+        room_no = "_".join([str(n) for n in list(self.group)])
+        return f'roomNo{self.room_num}_{room_no}, {self.desc}'
 
 class AVLNode:
     def __init__(self, data):
@@ -159,9 +167,7 @@ class AVLTree:
     def _inorder_traversal(self, node, traversal_result):
         if node:
             self._inorder_traversal(node.left, traversal_result)
-
-            """ Displaying number of room corresponding to it's group | Ex: room number: 0, group: 0, description: pre_existed"""
-            traversal_result.append(f"room number: {node.data.room_num}, group: {node.data.group}, description: {node.data.desc}") 
+            traversal_result.append(f"{node.data.get_information()}") 
             self._inorder_traversal(node.right, traversal_result)
 
     def _build_tree_string(
@@ -289,6 +295,7 @@ def main():
     avl.root = inserts(inp, avl)
     print(avl)
     print(len(avl))
+    avl.write_file()
 
 if __name__ == "__main__":
     main()
