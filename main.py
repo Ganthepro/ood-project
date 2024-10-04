@@ -1,5 +1,6 @@
-import time,sys
+import time, sys
 from functools import wraps
+
 
 def timeit(func):
     @wraps(func)
@@ -9,7 +10,9 @@ def timeit(func):
         end_time = time.time()
         print(f"{func.__name__} function took {end_time - start_time:.10f} seconds")
         return result
+
     return wrapper
+
 
 class Queue:
     def __init__(self) -> None:
@@ -31,17 +34,18 @@ class Room:
     def __init__(self, room_num, group) -> None:
         self.room_num = room_num
         self.group = group
-        self.desc = 'newcomer' if not isinstance(group, int) else 'pre_existed'
+        self.desc = "newcomer" if not isinstance(group, int) else "pre_existed"
 
     def __str__(self) -> str:
         return f"{self.room_num}, {self.group}"
-    
+
     def get_information(self) -> str:
         if isinstance(self.group, int):
-            return f'roomNo{self.room_num}_{self.group}, {self.desc}'
-        
+            return f"roomNo{self.room_num}_{self.group}, {self.desc}"
+
         room_no = "_".join([str(n) for n in list(self.group)])
-        return f'roomNo{self.room_num}_{room_no}, {self.desc}'
+        return f"roomNo{self.room_num}_{room_no}, {self.desc}"
+
 
 class AVLNode:
     def __init__(self, data):
@@ -59,6 +63,7 @@ class AVLNode:
     def set_height(self):
         self.height = 1 + max(self.get_height(self.left), self.get_height(self.right))
         return self.height
+
 
 class AVLTree:
     def __init__(self) -> None:
@@ -88,7 +93,7 @@ class AVLTree:
             root = self.rotate_left(root)
         root.set_height()
         return root
-    
+
     def rotate_right(self, root):
         new_root = root.left
         root.left = new_root.right
@@ -119,7 +124,7 @@ class AVLTree:
             if n.right:
                 q.enqueue(n.right)
         return l
-    
+
     def printTree90(self, node, level=0):
         if node != None:
             self.printTree90(node.right, level + 1)
@@ -159,14 +164,14 @@ class AVLTree:
         traversal_result = []
         self._inorder_traversal(self.root, traversal_result)
         result_str = "\n".join(traversal_result)
-        
+
         with open(filename, "w") as f:
             f.write(result_str)
 
     def _inorder_traversal(self, node, traversal_result):
         if node:
             self._inorder_traversal(node.left, traversal_result)
-            traversal_result.append(f"{node.data.get_information()}") 
+            traversal_result.append(f"{node.data.get_information()}")
             self._inorder_traversal(node.right, traversal_result)
 
     def _build_tree_string(
@@ -217,7 +222,7 @@ class AVLTree:
             r_line = r_box[i] if i < len(r_box) else " " * r_box_width
             new_box.append(l_line + gap + r_line)
         return new_box, len(new_box[0]), new_root_start, new_root_end
-    
+
     @timeit
     def search(self, root, room_num):
         if root is None:
@@ -256,7 +261,7 @@ class AVLTree:
                 current_room += 1
             current_room = node.data.room_num + 1
             inorder_traversal(node.right)
-        
+
         inorder_traversal(root)
 
         while current_room < max_room:
@@ -269,14 +274,15 @@ class AVLTree:
 @timeit
 def inserts(inp: list, avl: AVLTree):
     for i in range(inp[0]):
-        avl.root = avl.insert(avl.root, Room(2 ** i, (0)))
+        avl.root = avl.insert(avl.root, Room(2**i, (0)))
     for i in range(inp[1]):
         for j in range(inp[2]):
             for k in range(inp[3]):
                 for l in range(inp[4]):
-                    room_num = (3 ** l) * (5 ** k) * (7 ** j) * (11 ** i)
+                    room_num = (3**l) * (5**k) * (7**j) * (11**i)
                     avl.root = avl.insert(avl.root, Room(room_num, (i, j, k, l)))
     return avl.root
+
 
 def main():
     avl = AVLTree()
@@ -286,12 +292,15 @@ def main():
     print(avl)
     print(f"Memory Usage : {memory_usage(avl)} Bytes")
 
+
 def memory_usage(avl: AVLTree):
     def node_size(node):
         if node is None:
             return 0
         return sys.getsizeof(node) + node_size(node.left) + node_size(node.right)
+
     return node_size(avl.root)
+
 
 if __name__ == "__main__":
     main()
