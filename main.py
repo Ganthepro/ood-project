@@ -1,7 +1,6 @@
 import time
 from functools import wraps
 
-# Timing decorator
 def timeit(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
