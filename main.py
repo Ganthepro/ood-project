@@ -1,4 +1,4 @@
-import time
+import time,sys
 from functools import wraps
 
 def timeit(func):
@@ -295,6 +295,14 @@ def main():
     avl.root = inserts(inp, avl)
     print(avl)
     print(len(avl))
+    print(f"Memory Usage : {memory_usage(avl)} Bytes")
+
+def memory_usage(avl: AVLTree):
+    def node_size(node):
+        if node is None:
+            return 0
+        return sys.getsizeof(node) + sys.getsizeof(node.data) + node_size(node.left) + node_size(node.right)
+    return node_size(avl.root)
     avl.write_file()
 
 if __name__ == "__main__":
