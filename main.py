@@ -72,7 +72,9 @@ class AVLTree:
     @timeit
     def insert(self, root, data: Room):
         if root is None:
-            return AVLNode(data)
+            new_node = AVLNode(data)
+            self.write_single_line(new_node)
+            return new_node
         if data.room_num == root.data.room_num:
             return root
         elif data.room_num < root.data.room_num:
@@ -148,9 +150,13 @@ class AVLTree:
             root.right = self.delete(root.right, data)
         else:
             if root.left is None:
-                return root.right
+                result = root.right
+                self.update_file()  # Update file after deletion
+                return result
             if root.right is None:
-                return root.left
+                result = root.left
+                self.update_file()  # Update file after deletion
+                return result
             succ = self.find_successor(root)
             root.data.room_num = succ.data.room_num
             root.right = self.delete(root.right, succ.data.room_num)
@@ -159,6 +165,14 @@ class AVLTree:
     def __str__(self) -> str:
         lines = AVLTree._build_tree_string(self.root, 0, False, "-")[0]
         return "\n" + "\n".join((line.rstrip() for line in lines))
+
+    def write_single_line(self, node: AVLNode, filename="output.txt"):
+        with open(filename, "w") as f:
+            f.write(node.data.get_information()+"\n")
+
+    def update_file(self, filename="output.txt"):
+        """Rewrite the entire file after a deletion"""
+        self.write_file(filename)
 
     def write_file(self, filename="output.txt"):
         traversal_result = []
