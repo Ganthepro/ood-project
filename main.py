@@ -274,13 +274,15 @@ class AVLTree:
 @timeit
 def inserts(inp: list, avl: AVLTree):
     for i in range(inp[0]):
-        avl.root = avl.insert(avl.root, Room(2**i, (0)))
-    for i in range(inp[1]):
-        for j in range(inp[2]):
-            for k in range(inp[3]):
-                for l in range(inp[4]):
-                    room_num = (3**l) * (5**k) * (7**j) * (11**i)
-                    avl.root = avl.insert(avl.root, Room(room_num, (i, j, k, l)))
+        for j in range(inp[1]):
+            for k in range(inp[2]):
+                for l in range(inp[3]):
+                    for n in range(inp[4]):
+                        room_num = (2**n) * (3**l) * (5**k) * (7**j) * (11**i)
+                        if j == k == l == n == 0:
+                            avl.root = avl.insert(avl.root, Room(room_num, (1, j, k, l, n, i)))
+                        else:
+                            avl.root = avl.insert(avl.root, Room(room_num, (0, j, k, l, n, i)))
     return avl.root
 
 
