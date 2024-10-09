@@ -1,6 +1,6 @@
 import time, sys
 from functools import wraps
-
+import tracemalloc
 
 def timeit(func):
     @wraps(func)
@@ -13,21 +13,70 @@ def timeit(func):
 
     return wrapper
 
+def memoryit(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        tracemalloc.start()  # Start tracking memory
+        result = func(*args, **kwargs)
+        current, peak = tracemalloc.get_traced_memory()  # Get current and peak memory usage
+        tracemalloc.stop()  # Stop tracking memory
+
+        current_kb = current / 1024
+        peak_kb = peak / 1024
+
+        print(f"Function '{func.__name__}' used {current_kb:.2f} KB of memory at the end")
+        print(f"Function '{func.__name__}' reached a peak memory usage of {peak_kb:.2f} KB")
+
+        return result
+
+    return wrapper
+
+class Node:
+    def __init__(self, data, prev=None, next=None) -> None:
+        self.data = data
+        self.prev = prev
+        self.next = next
+
+class DoublyLinkedList:
+    def __init__(self) -> None:
+        self.header = Node(None)
+        self.trailer = Node(None, prev=self.header)
+        self.header.next = self.trailer
+
+    def append(self, data):
+        new_node = Node(data)
+        last_node = self.trailer.prev
+        last_node.next = new_node
+        new_node.prev = last_node
+        new_node.next = self.trailer
+        self.trailer.prev = new_node
+
+    def remove_head(self):
+        if self.header.next == self.trailer:
+            return None
+        first_node = self.header.next
+        self.header.next = first_node.next
+        first_node.next.prev = self.header
+        return first_node.data
+
+    def is_empty(self):
+        return self.header.next == self.trailer
+
 
 class Queue:
     def __init__(self) -> None:
-        self.items = []
+        self.items = DoublyLinkedList()
 
     def enqueue(self, data):
         self.items.append(data)
 
     def dequeue(self):
-        t = self.items[0]
-        self.items.pop(0)
-        return t
+
+        return self.items.remove_head()
 
     def is_empty(self):
-        return len(self.items) == 0
+        return self.items.is_empty()
+
 
 
 class Room:
@@ -64,11 +113,15 @@ class AVLNode:
 class AVLTree:
     def __init__(self) -> None:
         self.root = None
+        self.max_room_number = 0
 
     @timeit
     def insert(self, root, data: Room):
         if root is None:
             return AVLNode(data)
+        if self.max_room_number < data.room_num:
+            self.max_room_number = data.room_num
+        
         if data.room_num == root.data.room_num:
             return root
         elif data.room_num < root.data.room_num:
@@ -138,6 +191,9 @@ class AVLTree:
     def delete(self, root, data):
         if root is None:
             return root
+        if self.max_room_number < data.room_num:
+            self.max_room_number -= 1
+        
         if root.data.room_num > data:
             root.left = self.delete(root.left, data)
         elif root.data.room_num < data:
@@ -230,9 +286,7 @@ class AVLTree:
         return self.search(root.right, room_num)
 
     def get_max_room(self, root):
-        if root.right is None:
-            return root.data.room_num
-        return self.get_max_room(root.right)
+        return self.max_room_number
 
     def missing_room_count(self, root):
         if root is None:
@@ -266,17 +320,46 @@ class AVLTree:
 
         return missing_rooms
 
-
+@memoryit
 @timeit
 def inserts(inp: list, avl: AVLTree):
-    for i in range(1, inp[0] + 1):
-        avl.root = avl.insert(avl.root, Room((11**1) * (7**0) * (5**0) * (3**0) * (2**i), (1, 0, 0, 0, i)))
-    for i in range(1, inp[1] + 1):
-        for j in range(1, inp[2] + 1):
-            for k in range(1, inp[3] + 1):
-                for l in range(1, inp[4] + 1):
-                    room_num = (11**0) * (7**i) * (5**j) * (3**k) * (2**l)
-                    avl.root = avl.insert(avl.root, Room(room_num, (0, i, j, k, l)))
+    
+    def calculate_room_number(i, j, k, l):
+        return (11**0) * (7**i) * (5**j) * (3**k) * (2**l)
+
+    def create_room_group(i, j, k, l, inp):
+        room_group = [0]
+        for m in range(1, len(inp)):
+            if inp[m] <= 0:
+                room_group.append(0)
+            else:
+                room_group.append([i, j, k, l][m - 1])
+        return tuple(room_group)
+
+    adjusted_inp = [inp[0]] + [max(1, x) for x in inp[1:-1]] + [inp[-1]]
+    
+    for i in range(1, adjusted_inp[0] + 1):
+        room_num = (11**1) * (7**0) * (5**0) * (3**0) * (2**i)
+        room_group = (1, 0, 0, 0, i)
+        avl.root = avl.insert(avl.root, Room(room_num, room_group))
+
+    for i in range(1, adjusted_inp[1] + 1):
+        for j in range(1, adjusted_inp[2] + 1):
+            for k in range(1, adjusted_inp[3] + 1):
+                for l in range(1, adjusted_inp[4] + 1):
+                    room_num = calculate_room_number(i, j, k, l)
+                    room_group_tuple = create_room_group(i, j, k, l, inp)
+                    avl.root = avl.insert(avl.root, Room(room_num, room_group_tuple))
+                    avl.max_room_number = room_num
+
+    return avl.root
+
+@timeit
+def manual_insert(room_num, avl: AVLTree):
+    room_group_tuple = (2, 0, 0, 0, 0)
+    if avl.search(avl.root, room_num):
+        return avl.root
+    avl.root = avl.insert(avl.root, Room(room_num, room_group_tuple))
     return avl.root
 
 
