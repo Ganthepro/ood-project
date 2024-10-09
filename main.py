@@ -191,7 +191,7 @@ class AVLTree:
     def delete(self, root, data):
         if root is None:
             return root
-        if self.max_room_number < data.room_num:
+        if self.max_room_number <= data.room_num:
             self.max_room_number -= 1
         
         if root.data.room_num > data:
