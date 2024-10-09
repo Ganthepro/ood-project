@@ -68,9 +68,7 @@ class AVLTree:
     @timeit
     def insert(self, root, data: Room):
         if root is None:
-            new_node = AVLNode(data)
-            self.write_single_line(new_node)
-            return new_node
+            return AVLNode(data)
         if data.room_num == root.data.room_num:
             return root
         elif data.room_num < root.data.room_num:
@@ -146,13 +144,9 @@ class AVLTree:
             root.right = self.delete(root.right, data)
         else:
             if root.left is None:
-                result = root.right
-                self.update_file()  # Update file after deletion
-                return result
+                return root.right
             if root.right is None:
-                result = root.left
-                self.update_file()  # Update file after deletion
-                return result
+                return root.left
             succ = self.find_successor(root)
             root.data.room_num = succ.data.room_num
             root.right = self.delete(root.right, succ.data.room_num)
@@ -161,14 +155,6 @@ class AVLTree:
     def __str__(self) -> str:
         lines = AVLTree._build_tree_string(self.root, 0, False, "-")[0]
         return "\n" + "\n".join((line.rstrip() for line in lines))
-
-    def write_single_line(self, node: AVLNode, filename="output.txt"):
-        with open(filename, "w") as f:
-            f.write(node.data.get_information()+"\n")
-
-    def update_file(self, filename="output.txt"):
-        """Rewrite the entire file after a deletion"""
-        self.write_file(filename)
 
     def write_file(self, filename="output.txt"):
         traversal_result = []
@@ -283,16 +269,14 @@ class AVLTree:
 
 @timeit
 def inserts(inp: list, avl: AVLTree):
-    for i in range(inp[0]):
-        for j in range(inp[1]):
-            for k in range(inp[2]):
-                for l in range(inp[3]):
-                    for n in range(inp[4]):
-                        room_num = (2**n) * (3**l) * (5**k) * (7**j) * (11**i)
-                        if j == k == l == n == 0:
-                            avl.root = avl.insert(avl.root, Room(room_num, (1, j, k, l, n, i)))
-                        else:
-                            avl.root = avl.insert(avl.root, Room(room_num, (0, j, k, l, n, i)))
+    for i in range(1, inp[0] + 1):
+        avl.root = avl.insert(avl.root, Room((11**1) * (7**0) * (5**0) * (3**0) * (2**i), (1, 0, 0, 0, i)))
+    for i in range(1, inp[1] + 1):
+        for j in range(1, inp[2] + 1):
+            for k in range(1, inp[3] + 1):
+                for l in range(1, inp[4] + 1):
+                    room_num = (11**0) * (7**i) * (5**j) * (3**k) * (2**l)
+                    avl.root = avl.insert(avl.root, Room(room_num, (0, i, j, k, l)))
     return avl.root
 
 
