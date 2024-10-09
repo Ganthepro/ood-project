@@ -34,17 +34,13 @@ class Room:
     def __init__(self, room_num, group) -> None:
         self.room_num = room_num
         self.group = group
-        self.desc = "newcomer" if not isinstance(group, int) else "pre_existed"
 
     def __str__(self) -> str:
         return f"{self.room_num}, {self.group}"
 
     def get_information(self) -> str:
-        if isinstance(self.group, int):
-            return f"roomNo{self.room_num}_{self.group}, {self.desc}"
-
-        room_no = "_".join([str(n) for n in list(self.group)])
-        return f"roomNo{self.room_num}_{room_no}, {self.desc}"
+        room_no = "_".join(list(map(str, self.group)))
+        return f"{room_no} {self.room_num}"
 
 
 class AVLNode:
