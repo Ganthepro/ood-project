@@ -200,7 +200,7 @@ class AVLTree:
     def delete(self, root, data):
         if root is None:
             return root
-        if self.max_room_number <= data.room_num:
+        if self.max_room_number <= int(data):
             self.max_room_number -= 1
         
         if root.data.room_num > data:
@@ -360,7 +360,6 @@ def inserts(inp: list, avl: AVLTree):
                     room_group_tuple = create_room_group(i, j, k, l, inp)
                     avl.root = avl.insert(avl.root, Room(room_num, room_group_tuple))
                     avl.max_room_number = room_num
-
     return avl.root
 
 
@@ -448,18 +447,22 @@ def front_program():
 def print_tree(avl : AVLTree):
     # print(avl)
     avl.printTree90(avl.root)
+    
 def add_room(avl):
     ''''''
-    inp = list(map(int, front_program().split("/")))
-    avl.root = inserts(inp, avl)
-    avl.write_file()
+    room_num = int(input("Room Add No.\n-> "))
+    manual_insert(room_num, avl.root)
+    
 def find_room(avl  : AVLTree):
     ''''''
+    room_num = int(input("Room Add No.\n-> "))
+    avl.search(avl.root, room_num)
+    
 def delete_room(avl : AVLTree):
-    ''''''
-    data = input("Room Delete No.\n-> ")
+    data = int(input("Room Delete No.\n-> "))
     avl.delete(avl.root, data)
     print("Deleted")
+    
 def total_room(avl  : AVLTree):
     ''''''
     print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
