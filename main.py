@@ -1,16 +1,21 @@
 import time, sys
 from functools import wraps
 import tracemalloc
-
+process_time = []
+count = 0
 def timeit(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
+        global count
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
-        print(f"{func.__name__} function took {end_time - start_time:.10f} seconds")
+        time_txt = f"{end_time - start_time:.22f}"
+        txt = f"{count:008X} | Function '{func.__name__}' took {time_txt} seconds"
+        process_time.append(txt)
+        print(txt)
+        count+=1
         return result
-
     return wrapper
 
 def memoryit(func):
@@ -354,6 +359,42 @@ def inserts(inp: list, avl: AVLTree):
 
     return avl.root
 
+
+# @memoryit
+# @timeit
+# def inserts_more(inp: list, avl: AVLTree):
+    
+#     def calculate_room_number(i, j, k, l):
+#         return (11**0) * (7**i) * (5**j) * (3**k) * (2**l)
+
+#     def create_room_group(i, j, k, l, inp):
+#         room_group = [0]
+#         for m in range(1, len(inp)):
+#             if inp[m] <= 0:
+#                 room_group.append(0)
+#             else:
+#                 room_group.append([i, j, k, l][m - 1])
+#         return tuple(room_group)
+
+#     adjusted_inp = [inp[0]] + [max(1, x) for x in inp[1:-1]] + [inp[-1]]
+    
+#     for i in range(1, adjusted_inp[0] + 1):
+#         room_num = (11**1) * (7**0) * (5**0) * (3**0) * (2**i)
+#         room_group = (1, 0, 0, 0, i)
+#         avl.root = avl.insert(avl.root, Room(room_num, room_group))
+
+#     for i in range(1, adjusted_inp[1] + 1):
+#         for j in range(1, adjusted_inp[2] + 1):
+#             for k in range(1, adjusted_inp[3] + 1):
+#                 for l in range(1, adjusted_inp[4] + 1):
+#                     room_num = calculate_room_number(i, j, k, l)
+#                     room_group_tuple = create_room_group(i, j, k, l, inp)
+#                     avl.root = avl.insert(avl.root, Room(room_num, room_group_tuple))
+#                     avl.max_room_number = room_num
+
+#     return avl.root
+
+
 @timeit
 def manual_insert(room_num, avl: AVLTree):
     room_group_tuple = (2, 0, 0, 0, 0)
@@ -372,6 +413,8 @@ def sign(text = None):
     print(f"|{gap:^46}|")
     print("="*48)
 def front_program():
+    import os
+    os.system('cls||clear')
     sign()
     print("กรอกจำนวนห้องพักด้วยค่าตั้งแต่ 1 ถึง 5")
     car1 = input("Vehicle 1\n-> ")
@@ -381,7 +424,17 @@ def front_program():
     car5 = input("Vehicle 5\n-> ")
     cars = [car2, car3, car4, car5]
     number = 5
+    
+    import os
+    os.system('cls||clear')
+    print("="*32)
+    print(f"ผู้พักอาศัยเดิม {car1}")
+    print(f"ผู้พักอาศัยที่มาเพิ่ม {cars}")
+    print("="*32)
     print("Welcome to Infinity Hotel โรงแรมไร้ขีดจำกัด")
+    print("กำลังจัดหาที่พัก...")
+    print("="*32)
+    print()
     output = car1
     for car in cars:
         output += f"/{car}"
@@ -392,54 +445,80 @@ def print_tree(avl):
     print(avl)
 def add_room(avl):
     ''''''
-def find_room(avl):
+    inp = list(map(int, front_program().split("/")))
+    avl.root = inserts(inp, avl)
+    avl.write_file()
+def find_room(avl  : AVLTree):
     ''''''
-def delete_room(avl):
+def delete_room(avl : AVLTree):
     ''''''
-def total_room(avl):
+    data = input("Room Delete No.\n-> ")
+    avl.delete(avl.root, data)
+    print("Deleted")
+def total_room(avl  : AVLTree):
     ''''''
-def empty_room(avl):
+    print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
+def empty_room(avl  : AVLTree):
     ''''''
+    n = avl.missing_room_count(avl.root)
+    print(f"จำนวนห้องพักที่ว่างอยู่ ณ ปจจุบัน : {len(avl)}")
 
-def program(avl):
+def program(avl  : AVLTree):
+    is_first = False
     sign("How may I assist you today?")    
     choice = 6
     while choice > 0:
+        con = 0
+        if not is_first:
+            is_first = True
+        else:
+            con = input("Continue ? (1/0)\n-> ")
+            import os
+            os.system('cls||clear')
+            if con == '0':
+                print("Exiting...")
+                break
         print("1 | Print Tree")
         print("2 | Find Room")
         print("3 | Add Room")
         print("4 | Delete Room")
         print("5 | Count Room")
         print("6 | Empty Room")
+        print("7 | Runtime Check")
         print("0 | Exit")
-        choice = int(input("-> "))
-        if choice == 1:
-            print_tree(avl)
-        elif choice == 2:
-            find_room(avl)
-        elif choice == 3:
-            add_room(avl)
-        elif choice == 4:
-            delete_room(avl)
-        elif choice == 5:
-            total_room(avl)
-        elif choice == 6:
-            empty_room(avl)
-        else:
+        try:
+            choice = int(input("-> "))
+            if choice == 1:
+                print_tree(avl)
+            elif choice == 2:
+                find_room(avl)
+            elif choice == 3:
+                add_room(avl)
+            elif choice == 4:
+                delete_room(avl)
+            elif choice == 5:
+                total_room(avl)
+            elif choice == 6:
+                empty_room(avl)
+            elif choice == 7:
+                global process_time
+                for item in process_time:
+                    print(item)
+            elif choice == 0:
+                print("Exiting...")
+                break
+            else:
+                print("Forced to Exit program")
+                print("Exiting...")
+                break
+        except KeyboardInterrupt:
+            print("Forced to Exit program")
             print("Exiting...")
             break
-        print()
-
-if __name__ == "__main__":
-    avl = AVLTree()
-    inp = list(map(int, front_program().split("/")))
-    avl.root = inserts(inp, avl)
-    avl.write_file()
-    print(avl)
-    print(len(avl))
-    program(avl)
-    print(f"Memory Usage : {memory_usage(avl)} Bytes")
-
+        except ValueError:
+            import os
+            os.system('cls||clear')
+            print("กรุณาเลือกด้วยตัวเลข 0-7 ครับ")
 
 def memory_usage(avl: AVLTree):
     def node_size(node):
@@ -449,6 +528,12 @@ def memory_usage(avl: AVLTree):
 
     return node_size(avl.root)
 
-
 if __name__ == "__main__":
-    main()
+    avl = AVLTree()
+    inp = list(map(int, front_program().split("/")))
+    avl.root = inserts(inp, avl)
+    avl.write_file()
+    # print(avl)
+    print(f"Memory Usage : {memory_usage(avl)} Bytes")
+    print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
+    program(avl)
