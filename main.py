@@ -357,16 +357,6 @@ def inserts(inp: list, avl: AVLTree):
         room_group_tuple = create_room_group(i, j, k, l, inp)
         avl.root = avl.insert(avl.root, Room(room_num, room_group_tuple))
         avl.max_room_number = room_num
-
-    
-    # for i in range(1, adjusted_inp[1] + 1):
-    #     for j in range(1, adjusted_inp[2] + 1):
-    #         for k in range(1, adjusted_inp[3] + 1):
-    #             for l in range(1, adjusted_inp[4] + 1):
-    #                 room_num = calculate_room_number(i, j, k, l)
-    #                 room_group_tuple = create_room_group(i, j, k, l, inp)
-    #                 avl.root = avl.insert(avl.root, Room(room_num, room_group_tuple))
-    #                 avl.max_room_number = room_num
     
     return avl.root
 
