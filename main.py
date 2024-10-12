@@ -202,21 +202,14 @@ def sign(text = None):
     print("="*48)
 def front_program():
     sign()
-    print("กรอกจำนวนห้องพักด้วยค่าตั้งแต่ 1 ถึง N (4 cars is default)")
-    car1 = input("Car 1\n-> ")
-    car2 = input("Car 2\n-> ")
-    car3 = input("Car 3\n-> ")
-    car4 = input("Car 4\n-> ")
-    cars = [car2, car3, car4]
+    print("กรอกจำนวนห้องพักด้วยค่าตั้งแต่ 1 ถึง 5")
+    car1 = input("Vehicle 1\n-> ")
+    car2 = input("Vehicle 2\n-> ")
+    car3 = input("Vehicle 3\n-> ")
+    car4 = input("Vehicle 4\n-> ")
+    car5 = input("Vehicle 5\n-> ")
+    cars = [car2, car3, car4, car5]
     number = 5
-    print("Add more car ? (Y/N)")    
-    add = True if input("-> ") == "Y" else False
-    while add:
-        car = input(f"Car {number}:")
-        cars.append(car)
-        print("Add more car ? (Y/N)")    
-        add = True if input("->") == "Y" else False
-    
     print("Welcome to Infinity Hotel โรงแรมไร้ขีดจำกัด")
     output = car1
     for car in cars:
@@ -224,43 +217,47 @@ def front_program():
     return output
 
 
-def print_tree():
-    '''Print'''
-def find_room():
+def print_tree(avl):
+    print(avl)
+def add_room(avl):
     ''''''
-def delete_room():
+def find_room(avl):
     ''''''
-def total_room():
+def delete_room(avl):
     ''''''
-def empty_room():
+def total_room(avl):
+    ''''''
+def empty_room(avl):
     ''''''
 
-def program():
+def program(avl):
     sign("How may I assist you today?")    
     choice = 6
     while choice > 0:
         print("1 | Print Tree")
         print("2 | Find Room")
-        print("3 | Delete Room")
-        print("4 | Count Room")
-        print("5 | Empty Room")
+        print("3 | Add Room")
+        print("4 | Delete Room")
+        print("5 | Count Room")
+        print("6 | Empty Room")
         print("0 | Exit")
         choice = int(input("-> "))
         if choice == 1:
-            print_tree()
+            print_tree(avl)
         elif choice == 2:
-            find_room()
+            find_room(avl)
         elif choice == 3:
-            delete_room()
+            add_room(avl)
         elif choice == 4:
-            total_room()
+            delete_room(avl)
         elif choice == 5:
-            empty_room()
+            total_room(avl)
+        elif choice == 6:
+            empty_room(avl)
         else:
             print("Exiting...")
             break
         print()
-
 
 if __name__ == "__main__":
     avl = AVLTree()
@@ -268,4 +265,4 @@ if __name__ == "__main__":
     avl.root = inserts(inp, avl)
     print(avl)
     print(len(avl))
-    program()
+    program(avl)
