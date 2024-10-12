@@ -342,16 +342,32 @@ def inserts(inp: list, avl: AVLTree):
         room_num = (11**1) * (7**0) * (5**0) * (3**0) * (2**i)
         room_group = (1, 0, 0, 0, i)
         avl.root = avl.insert(avl.root, Room(room_num, room_group))
+        
+ # Calculate total iterations based on inp dimensions
+    total_iterations = adjusted_inp[1] * adjusted_inp[2] * adjusted_inp[3] * adjusted_inp[4]
 
-    for i in range(1, adjusted_inp[1] + 1):
-        for j in range(1, adjusted_inp[2] + 1):
-            for k in range(1, adjusted_inp[3] + 1):
-                for l in range(1, adjusted_inp[4] + 1):
-                    room_num = calculate_room_number(i, j, k, l)
-                    room_group_tuple = create_room_group(i, j, k, l, inp)
-                    avl.root = avl.insert(avl.root, Room(room_num, room_group_tuple))
-                    avl.max_room_number = room_num
+    # Use one loop to iterate over all possible combinations
+    for n in range(total_iterations):
+        i = (n // (adjusted_inp[2] * adjusted_inp[3] * adjusted_inp[4])) % adjusted_inp[1] + 1
+        j = (n // (adjusted_inp[3] * adjusted_inp[4])) % adjusted_inp[2] + 1
+        k = (n // adjusted_inp[4]) % adjusted_inp[3] + 1
+        l = n % adjusted_inp[4] + 1
 
+        room_num = calculate_room_number(i, j, k, l)
+        room_group_tuple = create_room_group(i, j, k, l, inp)
+        avl.root = avl.insert(avl.root, Room(room_num, room_group_tuple))
+        avl.max_room_number = room_num
+
+    
+    # for i in range(1, adjusted_inp[1] + 1):
+    #     for j in range(1, adjusted_inp[2] + 1):
+    #         for k in range(1, adjusted_inp[3] + 1):
+    #             for l in range(1, adjusted_inp[4] + 1):
+    #                 room_num = calculate_room_number(i, j, k, l)
+    #                 room_group_tuple = create_room_group(i, j, k, l, inp)
+    #                 avl.root = avl.insert(avl.root, Room(room_num, room_group_tuple))
+    #                 avl.max_room_number = room_num
+    
     return avl.root
 
 @timeit
