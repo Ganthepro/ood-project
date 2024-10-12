@@ -445,8 +445,9 @@ def front_program():
     return output
 
 
-def print_tree(avl):
-    print(avl)
+def print_tree(avl : AVLTree):
+    # print(avl)
+    avl.printTree90(avl.root)
 def add_room(avl):
     ''''''
     inp = list(map(int, front_program().split("/")))
