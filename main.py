@@ -2,25 +2,28 @@ import time, sys
 from functools import wraps
 import tracemalloc
 process_time = []
-count = 0
+process_memory = []
+count_time = 0
+count_memory = 0
 def timeit(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        global count
+        global count_time
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
         time_txt = f"{end_time - start_time:.22f}"
-        txt = f"{count:008X} | Function '{func.__name__}' took {time_txt} seconds"
+        txt = f"{count_time:008X} | Function '{func.__name__}' took {time_txt} seconds"
         process_time.append(txt)
         print(txt)
-        count+=1
+        count_time+=1
         return result
     return wrapper
 
 def memoryit(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
+        global count_memory
         tracemalloc.start()  # Start tracking memory
         result = func(*args, **kwargs)
         current, peak = tracemalloc.get_traced_memory()  # Get current and peak memory usage
@@ -28,10 +31,11 @@ def memoryit(func):
 
         current_kb = current / 1024
         peak_kb = peak / 1024
-
-        print(f"Function '{func.__name__}' used {current_kb:.2f} KB of memory at the end")
-        print(f"Function '{func.__name__}' reached a peak memory usage of {peak_kb:.2f} KB")
-
+        current_msg = f"{count_memory:008X} | Function '{func.__name__}' used {current_kb:.2f} KB of memory at the end"
+        peak_msg = f"{count_memory:008X} | Function '{func.__name__}' reached a peak memory usage of {peak_kb:.2f} KB"
+        process_memory.append(current_msg)
+        process_memory.append(peak_msg)
+        count_memory += 1
         return result
 
     return wrapper
@@ -485,6 +489,7 @@ def program(avl  : AVLTree):
         print("5 | Count Room")
         print("6 | Empty Room")
         print("7 | Runtime Check")
+        print("8 | Memory Check")
         print("0 | Exit")
         try:
             choice = int(input("-> "))
@@ -504,6 +509,10 @@ def program(avl  : AVLTree):
                 global process_time
                 for item in process_time:
                     print(item)
+            elif choice == 8:
+                global process_memory
+                for item in process_memory:
+                    print(item)
             elif choice == 0:
                 print("Exiting...")
                 break
@@ -518,7 +527,7 @@ def program(avl  : AVLTree):
         except ValueError:
             import os
             os.system('cls||clear')
-            print("กรุณาเลือกด้วยตัวเลข 0-7 ครับ")
+            print("กรุณาเลือกด้วยตัวเลข 0-8 ครับ")
 
 def memory_usage(avl: AVLTree):
     def node_size(node):
