@@ -1,6 +1,7 @@
 import time, sys
 from functools import wraps
 import tracemalloc
+from tqdm import tqdm
 
 def timeit(func):
     @wraps(func)
@@ -115,10 +116,12 @@ class AVLTree:
         self.root = None
         self.max_room_number = 0
 
-    @timeit
+    # @timeit
     def insert(self, root, data: Room):
         if root is None:
-            return AVLNode(data)
+            new_node = AVLNode(data)
+            self.write_single_line(new_node)
+            return new_node
         if self.max_room_number < data.room_num:
             self.max_room_number = data.room_num
         
@@ -200,9 +203,13 @@ class AVLTree:
             root.right = self.delete(root.right, data)
         else:
             if root.left is None:
-                return root.right
+                result = root.right
+                self.update_file()  # Update file after deletion
+                return result
             if root.right is None:
-                return root.left
+                result = root.left
+                self.update_file()  # Update file after deletion
+                return result
             succ = self.find_successor(root)
             root.data.room_num = succ.data.room_num
             root.right = self.delete(root.right, succ.data.room_num)
@@ -211,6 +218,14 @@ class AVLTree:
     def __str__(self) -> str:
         lines = AVLTree._build_tree_string(self.root, 0, False, "-")[0]
         return "\n" + "\n".join((line.rstrip() for line in lines))
+
+    def write_single_line(self, node: AVLNode, filename="output.txt"):
+        with open(filename, "a") as f:  # "a" mode will create the file if it doesn't exist
+            f.write(node.data.get_information() + "\n")
+
+    def update_file(self, filename="output.txt"):
+        """Rewrite the entire file after a deletion"""
+        self.write_file(filename)
 
     def write_file(self, filename="output.txt"):
         traversal_result = []
@@ -343,7 +358,7 @@ def inserts(inp: list, avl: AVLTree):
         room_group = (1, 0, 0, 0, i)
         avl.root = avl.insert(avl.root, Room(room_num, room_group))
 
-    for i in range(1, adjusted_inp[1] + 1):
+    for i in tqdm(range(1, adjusted_inp[1] + 1)):
         for j in range(1, adjusted_inp[2] + 1):
             for k in range(1, adjusted_inp[3] + 1):
                 for l in range(1, adjusted_inp[4] + 1):
@@ -368,7 +383,7 @@ def main():
     inp = list(map(int, input().split("/")))
     avl.root = inserts(inp, avl)
     avl.write_file()
-    print(avl)
+    # print(avl)
     print(f"Memory Usage : {memory_usage(avl)} Bytes")
 
 
