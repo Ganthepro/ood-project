@@ -1,7 +1,6 @@
 import time, sys
 from functools import wraps
 import tracemalloc
-from tqdm import tqdm
 
 def timeit(func):
     @wraps(func)
@@ -115,13 +114,11 @@ class AVLTree:
     def __init__(self) -> None:
         self.root = None
         self.max_room_number = 0
-        self.current_room_number = 0
 
     # @timeit
     def insert(self, root, data: Room):
         if root is None:
             return AVLNode(data)
-        self.current_room_number += 1
         if self.max_room_number < data.room_num:
             self.max_room_number = data.room_num
         
@@ -194,7 +191,6 @@ class AVLTree:
     def delete(self, root, data):
         if root is None:
             return root
-        self.current_room_number -= 1
         if self.max_room_number <= data.room_num:
             self.max_room_number -= 1
         
@@ -341,7 +337,7 @@ def inserts(inp: list, avl: AVLTree):
 
     
     # Initial insertion for i-loop only (1st room)
-    for i in tqdm(range(1, adjusted_inp[0] + 1)):
+    for i in range(1, adjusted_inp[0] + 1):
         room_group = (1, 0, 0, 0, i)
         avl.root = avl.insert(avl.root, Room(i, room_group))
 
@@ -349,7 +345,7 @@ def inserts(inp: list, avl: AVLTree):
     total_iterations = adjusted_inp[1] * adjusted_inp[2] * adjusted_inp[3] * adjusted_inp[4]
 
     # Merged loop with n directly as the room counter
-    for n in tqdm(range(1, total_iterations + 1)):
+    for n in range(1, total_iterations + 1):
         i = (n // (adjusted_inp[2] * adjusted_inp[3] * adjusted_inp[4])) % adjusted_inp[1] + 1
         j = (n // (adjusted_inp[3] * adjusted_inp[4])) % adjusted_inp[2] + 1
         k = (n // adjusted_inp[4]) % adjusted_inp[3] + 1
