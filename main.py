@@ -333,13 +333,9 @@ class AVLTree:
             current_room += 1
 
         return missing_rooms
-
 @memoryit
 @timeit
 def inserts(inp: list, avl: AVLTree):
-    
-    def calculate_room_number(i, j, k, l):
-        return (11**0) * (7**i) * (5**j) * (3**k) * (2**l)
 
     def create_room_group(i, j, k, l, inp):
         room_group = [0]
@@ -350,21 +346,29 @@ def inserts(inp: list, avl: AVLTree):
                 room_group.append([i, j, k, l][m - 1])
         return tuple(room_group)
 
+    # Adjust input values where needed
     adjusted_inp = [inp[0]] + [max(1, x) for x in inp[1:-1]] + [inp[-1]]
-    
-    for i in range(1, adjusted_inp[0] + 1):
-        room_num = (11**1) * (7**0) * (5**0) * (3**0) * (2**i)
-        room_group = (1, 0, 0, 0, i)
-        avl.root = avl.insert(avl.root, Room(room_num, room_group))
 
-    for i in range(1, adjusted_inp[1] + 1):
-        for j in range(1, adjusted_inp[2] + 1):
-            for k in range(1, adjusted_inp[3] + 1):
-                for l in range(1, adjusted_inp[4] + 1):
-                    room_num = calculate_room_number(i, j, k, l)
-                    room_group_tuple = create_room_group(i, j, k, l, inp)
-                    avl.root = avl.insert(avl.root, Room(room_num, room_group_tuple))
-                    avl.max_room_number = room_num
+    
+    # Initial insertion for i-loop only (1st room)
+    for i in range(1, adjusted_inp[0] + 1):
+        room_group = (1, 0, 0, 0, i)
+        avl.root = avl.insert(avl.root, Room(i, room_group))
+
+    # Total iterations
+    total_iterations = adjusted_inp[1] * adjusted_inp[2] * adjusted_inp[3] * adjusted_inp[4]
+
+    # Merged loop with n directly as the room counter
+    for n in range(1, total_iterations + 1):
+        i = (n // (adjusted_inp[2] * adjusted_inp[3] * adjusted_inp[4])) % adjusted_inp[1] + 1
+        j = (n // (adjusted_inp[3] * adjusted_inp[4])) % adjusted_inp[2] + 1
+        k = (n // adjusted_inp[4]) % adjusted_inp[3] + 1
+        l = n % adjusted_inp[4] + 1
+
+        room_group_tuple = create_room_group(i, j, k, l, inp)
+
+        avl.root = avl.insert(avl.root, Room(n + adjusted_inp[0], room_group_tuple))
+    avl.max_room_number = total_iterations + adjusted_inp[0]
 
     return avl.root
 
