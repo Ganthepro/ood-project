@@ -1,7 +1,6 @@
 import time, sys
 from functools import wraps
 import tracemalloc
-from tqdm import tqdm
 
 def timeit(func):
     @wraps(func)
@@ -120,7 +119,6 @@ class AVLTree:
     def insert(self, root, data: Room):
         if root is None:
             new_node = AVLNode(data)
-            self.write_single_line(new_node)
             return new_node
         if self.max_room_number < data.room_num:
             self.max_room_number = data.room_num
@@ -219,10 +217,6 @@ class AVLTree:
         lines = AVLTree._build_tree_string(self.root, 0, False, "-")[0]
         return "\n" + "\n".join((line.rstrip() for line in lines))
 
-    def write_single_line(self, node: AVLNode, filename="output.txt"):
-        with open(filename, "a") as f:  # "a" mode will create the file if it doesn't exist
-            f.write(node.data.get_information() + "\n")
-
     def update_file(self, filename="output.txt"):
         """Rewrite the entire file after a deletion"""
         self.write_file(filename)
@@ -234,6 +228,11 @@ class AVLTree:
 
         with open(filename, "w") as f:
             f.write(result_str)
+
+    def clear_file(self, filename="output.txt"):
+        """Clear the contents of the file."""
+        with open(filename, "w") as f:
+            pass 
 
     def _inorder_traversal(self, node, traversal_result):
         if node:
@@ -358,7 +357,7 @@ def inserts(inp: list, avl: AVLTree):
         room_group = (1, 0, 0, 0, i)
         avl.root = avl.insert(avl.root, Room(room_num, room_group))
 
-    for i in tqdm(range(1, adjusted_inp[1] + 1)):
+    for i in range(1, adjusted_inp[1] + 1):
         for j in range(1, adjusted_inp[2] + 1):
             for k in range(1, adjusted_inp[3] + 1):
                 for l in range(1, adjusted_inp[4] + 1):
@@ -381,6 +380,7 @@ def manual_insert(room_num, avl: AVLTree):
 def main():
     avl = AVLTree()
     inp = list(map(int, input().split("/")))
+    avl.clear_file()
     avl.root = inserts(inp, avl)
     avl.write_file()
     # print(avl)
