@@ -1,6 +1,7 @@
 import time, sys
 from functools import wraps
 import tracemalloc
+from tqdm import tqdm
 
 def timeit(func):
     @wraps(func)
@@ -114,11 +115,13 @@ class AVLTree:
     def __init__(self) -> None:
         self.root = None
         self.max_room_number = 0
+        self.current_room_number = 0
 
-    @timeit
+    # @timeit
     def insert(self, root, data: Room):
         if root is None:
             return AVLNode(data)
+        self.current_room_number += 1
         if self.max_room_number < data.room_num:
             self.max_room_number = data.room_num
         
@@ -191,6 +194,7 @@ class AVLTree:
     def delete(self, root, data):
         if root is None:
             return root
+        self.current_room_number -= 1
         if self.max_room_number <= data.room_num:
             self.max_room_number -= 1
         
@@ -324,6 +328,7 @@ class AVLTree:
 @timeit
 def inserts(inp: list, avl: AVLTree):
     
+    counter = 0
     def calculate_room_number(i, j, k, l):
         return (11**0) * (7**i) * (5**j) * (3**k) * (2**l)
 
@@ -338,19 +343,21 @@ def inserts(inp: list, avl: AVLTree):
 
     adjusted_inp = [inp[0]] + [max(1, x) for x in inp[1:-1]] + [inp[-1]]
     
-    for i in range(1, adjusted_inp[0] + 1):
-        room_num = (11**1) * (7**0) * (5**0) * (3**0) * (2**i)
+    for i in tqdm(range(1, adjusted_inp[0] + 1)):
+        counter += 1
+        # room_num = calculate_room_number(0, 0, 0, i)
         room_group = (1, 0, 0, 0, i)
-        avl.root = avl.insert(avl.root, Room(room_num, room_group))
+        avl.root = avl.insert(avl.root, Room(counter, room_group))
 
-    for i in range(1, adjusted_inp[1] + 1):
+    for i in tqdm(range(1, adjusted_inp[1] + 1)):
         for j in range(1, adjusted_inp[2] + 1):
             for k in range(1, adjusted_inp[3] + 1):
                 for l in range(1, adjusted_inp[4] + 1):
-                    room_num = calculate_room_number(i, j, k, l)
+                    counter += 1
+                    # room_num = calculate_room_number(i, j, k, l)
                     room_group_tuple = create_room_group(i, j, k, l, inp)
-                    avl.root = avl.insert(avl.root, Room(room_num, room_group_tuple))
-                    avl.max_room_number = room_num
+                    avl.root = avl.insert(avl.root, Room(counter, room_group_tuple))
+                    avl.max_room_number = counter
 
     return avl.root
 
@@ -368,7 +375,7 @@ def main():
     inp = list(map(int, input().split("/")))
     avl.root = inserts(inp, avl)
     avl.write_file()
-    print(avl)
+    # print(avl)
     print(f"Memory Usage : {memory_usage(avl)} Bytes")
 
 
