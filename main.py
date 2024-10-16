@@ -115,7 +115,7 @@ class AVLTree:
         self.root = None
         self.max_room_number = 0
 
-    # @timeit
+    @timeit
     def insert(self, root, data: Room):
         if root is None:
             new_node = AVLNode(data)
