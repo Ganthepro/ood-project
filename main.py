@@ -470,9 +470,9 @@ def delete_room(avl: AVLTree, data):
     if room is None:
         print("Room Not Found")
     else:
-        delete_room_function(avl.root, data)
+        delete_room_function(avl, data)
         avl.update_file()
-    print("Deleted")
+        print("Deleted")
 
 @timeit
 def delete_room_function(avl: AVLTree, data):
@@ -555,7 +555,6 @@ def program(avl: AVLTree):
 
             os.system("cls||clear")
             print("กรุณาเลือกด้วยตัวเลข 0-8 ครับ")
-
 
 def memory_usage(avl: AVLTree):
     def node_size(node):
