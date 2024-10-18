@@ -479,13 +479,9 @@ def program(avl: AVLTree):
         if not is_first:
             is_first = True
         else:
-            con = input("Continue ? (1/0)\n-> ")
+            input("Press Enter to Continue...\n-> ")
             import os
-
             os.system("cls||clear")
-            if con == "0":
-                print("Exiting...")
-                break
         print("1 | Print Tree")
         print("2 | Find Room")
         print("3 | Add Room")
@@ -531,7 +527,7 @@ def program(avl: AVLTree):
             else:
                 print("Forced to Exit program")
                 print("Exiting...")
-                break
+                exit()
         except KeyboardInterrupt:
             print("Forced to Exit program")
             print("Exiting...")
