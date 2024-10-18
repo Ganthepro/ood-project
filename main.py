@@ -196,7 +196,6 @@ class AVLTree:
             return root
         return self.find_successor(root.left, flag)
 
-    @timeit
     def delete(self, root, data):
         if root is None:
             return root
@@ -284,12 +283,11 @@ class AVLTree:
             new_box.append(l_line + gap + r_line)
         return new_box, len(new_box[0]), new_root_start, new_root_end
 
-    @timeit
     def search(self, root, room_num):
         if root is None:
             return False
         if root.data.room_num == room_num:
-            return True
+            return root
         if root.data.room_num > room_num:
             return self.search(root.left, room_num)
         return self.search(root.right, room_num)
@@ -407,6 +405,7 @@ def inserts(inp: list, avl: AVLTree):
 def manual_insert(room_num, avl: AVLTree):
     room_group_tuple = (2, 0, 0, 0, 0)
     if avl.search(avl.root, room_num):
+        print("Already has this room no.")
         return avl.root
     avl.root = avl.insert(avl.root, Room(room_num, room_group_tuple))
     return avl.root
@@ -425,19 +424,19 @@ def front_program():
     os.system('cls||clear')
     sign()
     print("กรอกจำนวนห้องพักด้วยค่าตั้งแต่ 1 ถึง 5")
-    car1 = input("Vehicle 1\n-> ")
-    car2 = input("Vehicle 2\n-> ")
-    car3 = input("Vehicle 3\n-> ")
-    car4 = input("Vehicle 4\n-> ")
-    car5 = input("Vehicle 5\n-> ")
+    car1 = input("INIT ผู้พักอาศัยที่อยู่ในโรงแรมอยู่แล้ว\n-> ")
+    car2 = input("จำนวนเครื่องบิน\n-> ")
+    car3 = input("จำนวนเรือในเครื่องบิน\n-> ")
+    car4 = input("จำนวนรถบัสในเรือ\n-> ")
+    car5 = input("จำนวนคนในรถบัส\n-> ")
     cars = [car2, car3, car4, car5]
     number = 5
-    
+    peoples = int(car2) *int(car4) * int(car3) *int(car5)
     import os
     os.system('cls||clear')
     print("="*32)
     print(f"ผู้พักอาศัยเดิม {car1}")
-    print(f"ผู้พักอาศัยที่มาเพิ่ม {cars}")
+    print(f"ผู้พักอาศัยที่มาเพิ่ม {peoples}")
     print("="*32)
     print("Welcome to Infinity Hotel โรงแรมไร้ขีดจำกัด")
     print("กำลังจัดหาที่พัก...")
@@ -450,31 +449,29 @@ def front_program():
 
 
 def print_tree(avl : AVLTree):
-    # print(avl)
     avl.printTree90(avl.root)
     
+@timeit
 def add_room(avl):
-    ''''''
     room_num = int(input("Room Add No.\n-> "))
-    manual_insert(room_num, avl.root)
+    print(manual_insert(room_num, avl.root))
     
+@timeit
 def find_room(avl  : AVLTree):
-    ''''''
     room_num = int(input("Room Add No.\n-> "))
-    avl.search(avl.root, room_num)
+    print(avl.search(avl.root, room_num))
     
+@timeit
 def delete_room(avl : AVLTree):
     data = int(input("Room Delete No.\n-> "))
     avl.delete(avl.root, data)
     print("Deleted")
     
 def total_room(avl  : AVLTree):
-    ''''''
     print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
 def empty_room(avl  : AVLTree):
-    ''''''
     n = avl.missing_room_count(avl.root)
-    print(f"จำนวนห้องพักที่ว่างอยู่ ณ ปจจุบัน : {len(avl)}")
+    print(f"จำนวนห้องพักที่ว่างอยู่ ณ ปจจุบัน : {avl.max_room_number-len(avl)}")
 
 def program(avl  : AVLTree):
     is_first = False
@@ -547,11 +544,14 @@ def memory_usage(avl: AVLTree):
     return node_size(avl.root)
 
 if __name__ == "__main__":
-    avl = AVLTree()
-    inp = list(map(int, front_program().split("/")))
-    avl.root = inserts(inp, avl)
-    avl.write_file()
-    # print(avl)
-    print(f"Memory Usage : {memory_usage(avl)} Bytes")
-    print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
-    program(avl)
+    try:
+        avl = AVLTree()
+        inp = list(map(int, front_program().split("/")))
+        avl.root = inserts(inp, avl)
+        avl.write_file()
+        # print(avl)
+        print(f"Memory Usage : {memory_usage(avl)} Bytes")
+        print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
+        program(avl)
+    except:
+        print("Forced to Exit...")
