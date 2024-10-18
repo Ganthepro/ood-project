@@ -214,11 +214,9 @@ class AVLTree:
         else:
             if root.left is None:
                 result = root.right
-                self.update_file()  # Update file after deletion
                 return result
             if root.right is None:
                 result = root.left
-                self.update_file()  # Update file after deletion
                 return result
             succ = self.find_successor(root)
             root.data.room_num = succ.data.room_num
@@ -448,6 +446,7 @@ def add_room(avl, room_num):
     if room is None:
         print("Room already exists")
         return
+    avl.update_file()
     print(f"Room Added : No.{room_num}, Group -> {(2,0,0,0,0)}")
 
 @timeit
@@ -465,6 +464,7 @@ def delete_room(avl: AVLTree, data):
     if room is None:
         print("Room not found")
         return
+    avl.update_file()
     print("Deleted")
 
 
@@ -557,9 +557,10 @@ def memory_usage(avl: AVLTree):
 if __name__ == "__main__":
     try:
         avl = AVLTree()
+        avl.clear_file()
         inp = list(map(int, front_program().split("/")))
         avl.root = inserts(inp, avl)
-        avl.write_file()
+        avl.update_file()
         # print(avl)
         print(f"Memory Usage : {memory_usage(avl)} Bytes")
         print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
