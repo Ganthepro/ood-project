@@ -1,13 +1,6 @@
 import time, sys
 from functools import wraps
 import tracemalloc
-
-process_time = []
-process_memory = []
-count_time = 0
-count_memory = 0
-
-
 def timeit(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -131,7 +124,7 @@ class AVLTree:
         self.root = None
         self.max_room_number = 0
 
-    @timeit
+    # @timeit
     def insert(self, root, data: Room):
         if root is None:
             return AVLNode(data)
@@ -506,13 +499,9 @@ def program(avl: AVLTree):
         if not is_first:
             is_first = True
         else:
-            con = input("Continue ? (1/0)\n-> ")
+            input("Press Enter to Continue...\n-> ")
             import os
-
             os.system("cls||clear")
-            if con == "0":
-                print("Exiting...")
-                break
         print("1 | Print Tree")
         print("2 | Find Room")
         print("3 | Add Room")
@@ -521,6 +510,7 @@ def program(avl: AVLTree):
         print("6 | Empty Room")
         print("7 | Runtime Check")
         print("8 | Memory Check")
+        print("9 | Reset")
         print("0 | Exit")
         try:
             choice = int(input("-> "))
@@ -547,13 +537,17 @@ def program(avl: AVLTree):
                 global process_memory
                 for item in process_memory:
                     print(item)
+            elif choice == 9:
+                print("Reseting...")
+                input("Press Enter to continue...")
+                break
             elif choice == 0:
                 print("Exiting...")
-                break
+                exit()
             else:
                 print("Forced to Exit program")
                 print("Exiting...")
-                break
+                exit()
         except KeyboardInterrupt:
             print("Forced to Exit program")
             print("Exiting...")
@@ -572,17 +566,24 @@ def memory_usage(avl: AVLTree):
         return sys.getsizeof(node) + node_size(node.left) + node_size(node.right)
 
     return node_size(avl.root)
-
-
+process_time = []
+process_memory = []
+count_time = 0
+count_memory = 0
 if __name__ == "__main__":
     try:
-        avl = AVLTree()
-        inp = list(map(int, front_program().split("/")))
-        avl.root = inserts(inp, avl)
-        avl.write_file()
-        # print(avl)
-        print(f"Memory Usage : {memory_usage(avl)} Bytes")
-        print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
-        program(avl)
+        while True:
+            process_time = []
+            process_memory = []
+            count_time = 0
+            count_memory = 0
+            avl = AVLTree()
+            inp = list(map(int, front_program().split("/")))
+            avl.root = inserts(inp, avl)
+            avl.write_file()
+            # print(avl)
+            print(f"Memory Usage : {memory_usage(avl)} Bytes")
+            print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
+            program(avl)
     except:
         print("Forced to Exit...")
