@@ -501,6 +501,7 @@ def program(avl: AVLTree):
         print("6 | Empty Room")
         print("7 | Runtime Check")
         print("8 | Memory Check")
+        print("9 | Reset")
         print("0 | Exit")
         try:
             choice = int(input("-> "))
@@ -527,9 +528,13 @@ def program(avl: AVLTree):
                 global process_memory
                 for item in process_memory:
                     print(item)
+            elif choice == 9:
+                print("Reseting...")
+                input("Press Enter to continue...")
+                break
             elif choice == 0:
                 print("Exiting...")
-                break
+                exit()
             else:
                 print("Forced to Exit program")
                 print("Exiting...")
@@ -556,13 +561,14 @@ def memory_usage(avl: AVLTree):
 
 if __name__ == "__main__":
     try:
-        avl = AVLTree()
-        inp = list(map(int, front_program().split("/")))
-        avl.root = inserts(inp, avl)
-        avl.write_file()
-        # print(avl)
-        print(f"Memory Usage : {memory_usage(avl)} Bytes")
-        print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
-        program(avl)
+        while True:
+            avl = AVLTree()
+            inp = list(map(int, front_program().split("/")))
+            avl.root = inserts(inp, avl)
+            avl.write_file()
+            # print(avl)
+            print(f"Memory Usage : {memory_usage(avl)} Bytes")
+            print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
+            program(avl)
     except:
         print("Forced to Exit...")
