@@ -1,13 +1,6 @@
 import time, sys
 from functools import wraps
 import tracemalloc
-
-process_time = []
-process_memory = []
-count_time = 0
-count_memory = 0
-
-
 def timeit(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -131,7 +124,7 @@ class AVLTree:
         self.root = None
         self.max_room_number = 0
 
-    @timeit
+    # @timeit
     def insert(self, root, data: Room):
         if root is None:
             return AVLNode(data)
@@ -557,11 +550,17 @@ def memory_usage(avl: AVLTree):
         return sys.getsizeof(node) + node_size(node.left) + node_size(node.right)
 
     return node_size(avl.root)
-
-
+process_time = []
+process_memory = []
+count_time = 0
+count_memory = 0
 if __name__ == "__main__":
     try:
         while True:
+            process_time = []
+            process_memory = []
+            count_time = 0
+            count_memory = 0
             avl = AVLTree()
             inp = list(map(int, front_program().split("/")))
             avl.root = inserts(inp, avl)
