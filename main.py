@@ -417,12 +417,12 @@ def front_program():
 
     os.system("cls||clear")
     sign()
-    print("กรอกจำนวนห้องพักด้วยค่าตั้งแต่ 1 ถึง 5")
-    car1 = input("INIT ผู้พักอาศัยที่อยู่ในโรงแรมอยู่แล้ว\n-> ")
-    car2 = input("จำนวนเครื่องบิน\n-> ")
-    car3 = input("จำนวนเรือในเครื่องบิน\n-> ")
-    car4 = input("จำนวนรถบัสในเรือ\n-> ")
-    car5 = input("จำนวนคนในรถบัส\n-> ")
+    print("กรอกจำนวนผู้พักอาศัยที่มาในแต่ละช่องทาง")
+    car1 = input("0. ผู้พักอาศัยที่อยู่ในโรงแรมอยู่แล้ว\n-> ")
+    car2 = input("1. จำนวนเครื่องบิน\n-> ")
+    car3 = input("2. จำนวนเรือในเครื่องบิน\n-> ")
+    car4 = input("3. จำนวนรถบัสในเรือ\n-> ")
+    car5 = input("4. จำนวนคนในรถบัส\n-> ")
     cars = [car2, car3, car4, car5]
     peoples = int(car2) * int(car4) * int(car3) * int(car5)
     import os
