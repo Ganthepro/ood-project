@@ -204,8 +204,11 @@ class AVLTree:
 
     def delete(self, root, data):
         if root is None:
-            return root
-        if self.max_room_number <= int(data):
+            return None
+
+        data = int(data)
+
+        if self.max_room_number <= data:
             self.max_room_number -= 1
         if root.data.room_num > data:
             root.left = self.delete(root.left, data)
@@ -214,16 +217,25 @@ class AVLTree:
         else:
             if root.left is None:
                 result = root.right
-                self.update_file()  # Update file after deletion
+                root = None
+                print("meow")
+                self.update_file()
                 return result
-            if root.right is None:
+            elif root.right is None:
                 result = root.left
-                self.update_file()  # Update file after deletion
+                root = None
+                self.update_file()
                 return result
+
             succ = self.find_successor(root)
-            root.data.room_num = succ.data.room_num
+            root.data.room_num = succ.data.room_num 
+
             root.right = self.delete(root.right, succ.data.room_num)
+
+        # Rebalance after deletion
         return self.rebalance(root)
+
+
 
     def __str__(self) -> str:
         lines = AVLTree._build_tree_string(self.root, 0, False, "-")[0]
@@ -442,12 +454,17 @@ def print_tree(avl: AVLTree):
     avl.printTree90(avl.root)
 
 
-@timeit
+
 def add_room(avl, room_num):
+    room = avl.search(avl.root, room_num)
+    if room is not None:
+        print("Room Already Exist")
+    else:
+        add_room_function(avl, room_num)
+        
+@timeit
+def add_room_function(avl, room_num):
     room = manual_insert(room_num, avl)
-    if room is None:
-        print("Room already exists")
-        return
     print(f"Room Added : No.{room_num}, Group -> {(2,0,0,0,0)}")
 
 @timeit
@@ -459,14 +476,18 @@ def find_room(avl: AVLTree, room_num):
         return
     print("Room not found")
 
-@timeit
 def delete_room(avl: AVLTree, data):
-    room = avl.delete(avl.root, data)
+    room = avl.search(avl.root, data)
     if room is None:
-        print("Room not found")
-        return
-    print("Deleted")
+        print("Room Not Found")
+    else:
+        delete_room_function(avl.root, data)
+        print("Deleted")
 
+@timeit
+def delete_room_function(avl: AVLTree, data):
+    avl.root = avl.delete(avl.root, data)
+    
 
 def total_room(avl: AVLTree):
     print(f"จำนวนห้องพัก ณ ปัจจุบัน : {len(avl)}")
