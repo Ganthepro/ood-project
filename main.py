@@ -87,7 +87,6 @@ class Queue:
         return self.items.is_empty()
 
 
-
 class Room:
     def __init__(self, room_num, group) -> None:
         self.room_num = room_num
