@@ -202,10 +202,9 @@ class AVLTree:
             return root
         return self.find_successor(root.left, flag)
 
-    @timeit
     def delete(self, root, data):
         if root is None:
-            return None
+            return root
         if self.max_room_number <= int(data):
             self.max_room_number -= 1
         if root.data.room_num > data:
@@ -443,17 +442,16 @@ def print_tree(avl: AVLTree):
     avl.printTree90(avl.root)
 
 
-def add_room(avl):
-    room_num = int(input("Add Room No.\n-> "))
+@timeit
+def add_room(avl, room_num):
     room = manual_insert(room_num, avl)
     if room is None:
         print("Room already exists")
         return
     print(f"Room Added : No.{room_num}, Group -> {(2,0,0,0,0)}")
 
-
-def find_room(avl: AVLTree):
-    room_num = int(input("Find Room No.\n-> "))
+@timeit
+def find_room(avl: AVLTree, room_num):
     room = avl.search(avl.root, room_num)
 
     if room is not None:
@@ -461,9 +459,8 @@ def find_room(avl: AVLTree):
         return
     print("Room not found")
 
-
-def delete_room(avl: AVLTree):
-    data = int(input("Room Delete No.\n-> "))
+@timeit
+def delete_room(avl: AVLTree, data):
     room = avl.delete(avl.root, data)
     if room is None:
         print("Room not found")
@@ -510,11 +507,14 @@ def program(avl: AVLTree):
             if choice == 1:
                 print_tree(avl)
             elif choice == 2:
-                find_room(avl)
+                room_num = int(input("Find Room No.\n-> "))
+                find_room(avl, room_num)
             elif choice == 3:
-                add_room(avl)
+                room_num = int(input("Add Room No.\n-> "))
+                add_room(avl, room_num)
             elif choice == 4:
-                delete_room(avl)
+                room_num = int(input("Room Delete No.\n-> "))
+                delete_room(avl, room_num)
             elif choice == 5:
                 total_room(avl)
             elif choice == 6:
