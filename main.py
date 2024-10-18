@@ -1,13 +1,6 @@
 import time, sys
 from functools import wraps
 import tracemalloc
-
-process_time = []
-process_memory = []
-count_time = 0
-count_memory = 0
-
-
 def timeit(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -131,7 +124,7 @@ class AVLTree:
         self.root = None
         self.max_room_number = 0
 
-    @timeit
+    # @timeit
     def insert(self, root, data: Room):
         if root is None:
             return AVLNode(data)
@@ -204,8 +197,11 @@ class AVLTree:
 
     def delete(self, root, data):
         if root is None:
-            return root
-        if self.max_room_number <= int(data):
+            return None
+
+        data = int(data)
+
+        if self.max_room_number <= data:
             self.max_room_number -= 1
         if root.data.room_num > data:
             root.left = self.delete(root.left, data)
@@ -215,13 +211,19 @@ class AVLTree:
             if root.left is None:
                 result = root.right
                 return result
-            if root.right is None:
+            elif root.right is None:
                 result = root.left
                 return result
+
             succ = self.find_successor(root)
-            root.data.room_num = succ.data.room_num
+            root.data.room_num = succ.data.room_num 
+
             root.right = self.delete(root.right, succ.data.room_num)
+
+        # Rebalance after deletion
         return self.rebalance(root)
+
+
 
     def __str__(self) -> str:
         lines = AVLTree._build_tree_string(self.root, 0, False, "-")[0]
@@ -440,12 +442,17 @@ def print_tree(avl: AVLTree):
     avl.printTree90(avl.root)
 
 
-@timeit
+
 def add_room(avl, room_num):
+    room = avl.search(avl.root, room_num)
+    if room is not None:
+        print("Room Already Exist")
+    else:
+        add_room_function(avl, room_num)
+        
+@timeit
+def add_room_function(avl, room_num):
     room = manual_insert(room_num, avl)
-    if room is None:
-        print("Room already exists")
-        return
     avl.update_file()
     print(f"Room Added : No.{room_num}, Group -> {(2,0,0,0,0)}")
 
@@ -458,15 +465,19 @@ def find_room(avl: AVLTree, room_num):
         return
     print("Room not found")
 
-@timeit
 def delete_room(avl: AVLTree, data):
-    room = avl.delete(avl.root, data)
+    room = avl.search(avl.root, data)
     if room is None:
-        print("Room not found")
-        return
-    avl.update_file()
+        print("Room Not Found")
+    else:
+        delete_room_function(avl.root, data)
+        avl.update_file()
     print("Deleted")
 
+@timeit
+def delete_room_function(avl: AVLTree, data):
+    avl.root = avl.delete(avl.root, data)
+    
 
 def total_room(avl: AVLTree):
     print(f"จำนวนห้องพัก ณ ปัจจุบัน : {len(avl)}")
@@ -486,13 +497,9 @@ def program(avl: AVLTree):
         if not is_first:
             is_first = True
         else:
-            con = input("Continue ? (1/0)\n-> ")
+            input("Press Enter to Continue...\n-> ")
             import os
-
             os.system("cls||clear")
-            if con == "0":
-                print("Exiting...")
-                break
         print("1 | Print Tree")
         print("2 | Find Room")
         print("3 | Add Room")
@@ -501,6 +508,7 @@ def program(avl: AVLTree):
         print("6 | Empty Room")
         print("7 | Runtime Check")
         print("8 | Memory Check")
+        print("9 | Reset")
         print("0 | Exit")
         try:
             choice = int(input("-> "))
@@ -527,13 +535,17 @@ def program(avl: AVLTree):
                 global process_memory
                 for item in process_memory:
                     print(item)
+            elif choice == 9:
+                print("Reseting...")
+                input("Press Enter to continue...")
+                break
             elif choice == 0:
                 print("Exiting...")
-                break
+                exit()
             else:
                 print("Forced to Exit program")
                 print("Exiting...")
-                break
+                exit()
         except KeyboardInterrupt:
             print("Forced to Exit program")
             print("Exiting...")
@@ -552,18 +564,26 @@ def memory_usage(avl: AVLTree):
         return sys.getsizeof(node) + node_size(node.left) + node_size(node.right)
 
     return node_size(avl.root)
-
-
+process_time = []
+process_memory = []
+count_time = 0
+count_memory = 0
 if __name__ == "__main__":
     try:
-        avl = AVLTree()
-        avl.clear_file()
-        inp = list(map(int, front_program().split("/")))
-        avl.root = inserts(inp, avl)
-        avl.update_file()
-        # print(avl)
-        print(f"Memory Usage : {memory_usage(avl)} Bytes")
-        print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
-        program(avl)
+        while True:
+            process_time = []
+            process_memory = []
+            count_time = 0
+            count_memory = 0
+            avl = AVLTree()
+            avl.clear_file()
+
+            inp = list(map(int, front_program().split("/")))
+            avl.root = inserts(inp, avl)
+            avl.update_file()
+            # print(avl)
+            print(f"Memory Usage : {memory_usage(avl)} Bytes")
+            print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
+            program(avl)
     except:
         print("Forced to Exit...")
