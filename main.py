@@ -210,13 +210,9 @@ class AVLTree:
         else:
             if root.left is None:
                 result = root.right
-                root = None
-                self.update_file()
                 return result
             elif root.right is None:
                 result = root.left
-                root = None
-                self.update_file()
                 return result
 
             succ = self.find_successor(root)
@@ -457,6 +453,7 @@ def add_room(avl, room_num):
 @timeit
 def add_room_function(avl, room_num):
     room = manual_insert(room_num, avl)
+    avl.update_file()
     print(f"Room Added : No.{room_num}, Group -> {(2,0,0,0,0)}")
 
 @timeit
@@ -473,7 +470,8 @@ def delete_room(avl: AVLTree, data):
     if room is None:
         print("Room Not Found")
     else:
-        delete_room_function(avl.root, data)
+        delete_room_function(avl, data)
+        avl.update_file()
         print("Deleted")
 
 @timeit
@@ -558,7 +556,6 @@ def program(avl: AVLTree):
             os.system("cls||clear")
             print("กรุณาเลือกด้วยตัวเลข 0-8 ครับ")
 
-
 def memory_usage(avl: AVLTree):
     def node_size(node):
         if node is None:
@@ -578,9 +575,11 @@ if __name__ == "__main__":
             count_time = 0
             count_memory = 0
             avl = AVLTree()
+            avl.clear_file()
+
             inp = list(map(int, front_program().split("/")))
             avl.root = inserts(inp, avl)
-            avl.write_file()
+            avl.update_file()
             # print(avl)
             print(f"Memory Usage : {memory_usage(avl)} Bytes")
             print(f"จำนวนห้องพัก ณ ปจจุบัน : {len(avl)}")
