@@ -1,0 +1,24 @@
+@startuml
+start
+
+:Call search function with root and room_num;
+if (Is root None?) then (yes)
+    :Return False (room_num not found);
+    stop
+else (no)
+    if (Is root.data.room_num equal to room_num?) then (yes)
+        :Return True (room_num found);
+        stop
+    else (no)
+        if (Is root.data.room_num greater than room_num?) then (yes)
+            :Call search on root.left with room_num;
+            stop
+        else (no)
+            :Call search on root.right with room_num;
+            stop
+        endif
+    endif
+endif
+
+stop
+@enduml

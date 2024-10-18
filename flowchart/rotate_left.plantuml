@@ -1,0 +1,17 @@
+@startuml
+start
+
+:Call rotate_left function with root;
+:Set new_root to root.right;
+
+:Set root.right to new_root.left;
+
+:Set new_root.left to root;
+
+:Call root.set_height();
+:Call new_root.set_height();
+
+:Return new_root;
+
+stop
+@enduml
