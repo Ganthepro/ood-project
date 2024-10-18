@@ -124,10 +124,11 @@ class AVLTree:
         self.root = None
         self.max_room_number = 0
 
-    # @timeit
+    @timeit
     def insert(self, root, data: Room):
         if root is None:
-            return AVLNode(data)
+            new_node = AVLNode(data)
+            return new_node
         if self.max_room_number < data.room_num:
             self.max_room_number = data.room_num
         
@@ -208,9 +209,13 @@ class AVLTree:
             root.right = self.delete(root.right, data)
         else:
             if root.left is None:
-                return root.right
+                result = root.right
+                self.update_file()  # Update file after deletion
+                return result
             if root.right is None:
-                return root.left
+                result = root.left
+                self.update_file()  # Update file after deletion
+                return result
             succ = self.find_successor(root)
             root.data.room_num = succ.data.room_num
             root.right = self.delete(root.right, succ.data.room_num)
@@ -220,6 +225,10 @@ class AVLTree:
         lines = AVLTree._build_tree_string(self.root, 0, False, "-")[0]
         return "\n" + "\n".join((line.rstrip() for line in lines))
 
+    def update_file(self, filename="output.txt"):
+        """Rewrite the entire file after a deletion"""
+        self.write_file(filename)
+
     def write_file(self, filename="output.txt"):
         traversal_result = []
         self._inorder_traversal(self.root, traversal_result)
@@ -227,6 +236,11 @@ class AVLTree:
 
         with open(filename, "w") as f:
             f.write(result_str)
+
+    def clear_file(self, filename="output.txt"):
+        """Clear the contents of the file."""
+        with open(filename, "w") as f:
+            pass 
 
     def _inorder_traversal(self, node, traversal_result):
         if node:
