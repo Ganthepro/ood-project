@@ -218,7 +218,6 @@ class AVLTree:
             if root.left is None:
                 result = root.right
                 root = None
-                print("meow")
                 self.update_file()
                 return result
             elif root.right is None:
