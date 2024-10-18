@@ -1,0 +1,24 @@
+@startuml
+start
+
+:Call function decorated with @memoryit;
+:Enter memoryit function;
+:Return wrapper function;
+
+:Enter wrapper function;
+:Start memory tracking with tracemalloc.start();
+
+:Call the original function (func);
+:Return result of the original function;
+
+:Get current and peak memory usage using tracemalloc.get_traced_memory();
+
+:Stop memory tracking with tracemalloc.stop();
+
+:Convert current and peak memory to KB;
+:Print current memory usage;
+:Print peak memory usage;
+
+:Return result of original function;
+stop
+@enduml

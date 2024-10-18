@@ -1,0 +1,20 @@
+@startuml
+start
+
+:Call function decorated with @timeit;
+:Enter timeit function;
+:Return wrapper function;
+
+:Enter wrapper function;
+:Record start_time = time.time();
+
+:Call the original function (func);
+:Return result of the original function;
+
+:Record end_time = time.time();
+:Calculate execution time = end_time - start_time;
+:Print execution time;
+
+:Return result of original function;
+stop
+@enduml

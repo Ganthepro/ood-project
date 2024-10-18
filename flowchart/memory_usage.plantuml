@@ -1,0 +1,22 @@
+@startuml
+start
+
+:Call memory_usage function with avl tree;
+
+:Define node_size function;
+
+:Call node_size with avl.root;
+
+if (Is node None?) then (yes)
+    :Return 0 (No memory usage for None);
+else (no)
+    :Calculate size of current node using sys.getsizeof;
+    :Recursively call node_size on node.left and node.right;
+    :Sum sizes of current node, left subtree, and right subtree;
+    :Return total size;
+endif
+
+:Return total memory usage from node_size(avl.root);
+
+stop
+@enduml

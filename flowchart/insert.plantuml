@@ -1,0 +1,30 @@
+@startuml
+start
+
+:Call insert function with root and data;
+if (Is root None?) then (yes)
+    :Create a new AVLNode with data;
+    :Return the new node;
+    stop
+else (no)
+    if (Is data.room_num equal to root.data.room_num?) then (yes)
+        :Return root;
+        stop
+    else (no)
+        if (Is data.room_num less than root.data.room_num?) then (yes)
+            :Call insert on root.left with data;
+            :Set root.left to the result of insert;
+        else (no)
+            :Call insert on root.right with data;
+            :Set root.right to the result of insert;
+        endif
+    endif
+    if (Is max_room_number < data.room_num?) then (yes)
+        :Update max_room_number to data.room_num;
+    endif
+    :Call rebalance on root;
+    :Return the rebalanced root;
+endif
+
+stop
+@enduml
