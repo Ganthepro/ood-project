@@ -467,7 +467,7 @@ def print_tree(avl : AVLTree):
 @timeit
 def add_room(avl):
     room_num = int(input("Room Add No.\n-> "))
-    print(manual_insert(room_num, avl.root))
+    print(manual_insert(room_num, avl))
     
 @timeit
 def find_room(avl  : AVLTree):
