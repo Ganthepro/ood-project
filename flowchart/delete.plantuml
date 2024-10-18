@@ -1,0 +1,40 @@
+@startuml
+start
+
+:Call delete function with root and data;
+if (Is root None?) then (yes)
+    :Return root (Nothing to delete);
+    stop
+else (no)
+    if (Is max_room_number <= data.room_num?) then (yes)
+        :Decrement max_room_number by 1;
+    endif
+
+    if (Is root.data.room_num > data?) then (yes)
+        :Call delete on root.left with data;
+        :Set root.left to result of delete;
+    else (no)
+        if (Is root.data.room_num < data?) then (yes)
+            :Call delete on root.right with data;
+            :Set root.right to result of delete;
+        else (no)
+            if (Is root.left None?) then (yes)
+                :Return root.right;
+                stop
+            endif
+            if (Is root.right None?) then (yes)
+                :Return root.left;
+                stop
+            endif
+            :Find successor with find_successor(root);
+            :Set root.data.room_num to successor's room_num;
+            :Call delete on root.right with successor's room_num;
+            :Set root.right to result of delete;
+        endif
+    endif
+
+    :Call rebalance on root;
+    :Return root;
+
+stop
+@enduml

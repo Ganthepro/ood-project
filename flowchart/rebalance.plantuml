@@ -1,0 +1,29 @@
+@startuml
+start
+
+:Call rebalance function with root;
+:Set balance to root.get_balance(root);
+
+if (Is balance equal to 2?) then (yes)
+    if (Is root.get_balance(root.left) equal to -1?) then (yes)
+        :Call rotate_left on root.left;
+        :Set root.left to result of rotate_left;
+    endif
+    :Call rotate_right on root;
+    :Set root to result of rotate_right;
+else (no)
+    if (Is balance equal to -2?) then (yes)
+        if (Is root.get_balance(root.right) equal to 1?) then (yes)
+            :Call rotate_right on root.right;
+            :Set root.right to result of rotate_right;
+        endif
+        :Call rotate_left on root;
+        :Set root to result of rotate_left;
+    endif
+endif
+
+:Call root.set_height();
+:Return the root;
+
+stop
+@enduml

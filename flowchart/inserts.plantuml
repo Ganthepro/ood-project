@@ -1,0 +1,35 @@
+@startuml
+start
+
+:Call inserts function with inp list and avl tree;
+
+:Define create_room_group function;
+
+:Adjust input values (adjusted_inp);
+
+:Initial insertion for i-loop (first room);
+while (i <= adjusted_inp[0])
+    :Create room_group (1, 0, 0, 0, i);
+    :Insert first room into AVL tree;
+    :Increment i;
+endwhile
+
+:Set total_iterations to adjusted_inp[1] * adjusted_inp[2] * adjusted_inp[3] * adjusted_inp[4];
+
+:Start merged loop with n from 1 to total_iterations;
+while (n <= total_iterations)
+    :Calculate i, j, k, and l values;
+    
+    :Call create_room_group with i, j, k, l, and inp;
+    :Create room_group_tuple;
+
+    :Insert room into AVL tree;
+    :Increment n;
+endwhile
+
+:Set avl.max_room_number to total_iterations + adjusted_inp[0];
+
+:Return avl.root;
+
+stop
+@enduml

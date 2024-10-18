@@ -1,0 +1,24 @@
+@startuml
+start
+
+:Call find_missing_rooms function with root;
+if (Is root None?) then (yes)
+    :Return empty list;
+    stop
+else (no)
+    :Initialize missing_rooms as an empty list;
+    :Set current_room to 0;
+
+    :Call get_max_room to get max_room;
+    
+    :Define inorder_traversal function;
+
+    :Call inorder_traversal with root;
+    while (Is current_room < max_room?) is (yes)
+        :Append current_room to missing_rooms;
+        :Increment current_room by 1;
+    endwhile
+    
+    :Return missing_rooms;
+stop
+@enduml
