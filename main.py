@@ -460,7 +460,7 @@ def delete_room_function(avl: AVLTree, data):
     
 
 def total_room(avl: AVLTree):
-    print(f"จำนวนห้องพัก ณ ปัจจุบัน : {len(avl)}")
+    print(f"จำนวนห้องพัก ณ ปัจจุบัน : {(avl.max_room_number)}")
 
 
 def empty_room(avl: AVLTree):
