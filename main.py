@@ -230,10 +230,6 @@ class AVLTree:
         return "\n" + "\n".join((line.rstrip() for line in lines))
 
     def update_file(self, filename="output.txt"):
-        """Rewrite the entire file after a deletion"""
-        self.write_file(filename)
-
-    def write_file(self, filename="output.txt"):
         traversal_result = []
         self._inorder_traversal(self.root, traversal_result)
         result_str = "\n".join(traversal_result)
