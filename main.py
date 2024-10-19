@@ -199,8 +199,6 @@ class AVLTree:
         if root is None:
             return None
         data = int(data)
-        if self.max_room_number <= data:
-            self.max_room_number -= 1
         if root.data.room_num > data:
             root.left = self.delete(root.left, data)
         elif root.data.room_num < data:
@@ -432,6 +430,9 @@ def add_room(avl, room_num):
         
 @timeit
 def add_room_function(avl, room_num):
+    if room_num < 0:
+        print("Room Number Can not be Negative")
+        return
     room = manual_insert(room_num, avl)
     avl.update_file()
     print(f"Room Added : No.{room_num}, Group -> {(2,0,0,0,0)}")
@@ -456,6 +457,8 @@ def delete_room(avl: AVLTree, data):
 
 @timeit
 def delete_room_function(avl: AVLTree, data):
+    if avl.max_room_number <= data:
+        avl.max_room_number -= 1
     avl.root = avl.delete(avl.root, data)
     
 
@@ -464,8 +467,7 @@ def total_room(avl: AVLTree):
 
 
 def empty_room(avl: AVLTree):
-    n = avl.missing_room_count(avl.root)
-    print(f"จำนวนห้องพักที่ว่างอยู่ ณ ปัจจุบัน : {n}")
+    print(f"จำนวนห้องพักที่ว่างอยู่ ณ ปัจจุบัน : {avl.max_room_number - len(avl)}")
 
 
 def program(avl: AVLTree):
