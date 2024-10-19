@@ -198,9 +198,7 @@ class AVLTree:
     def delete(self, root, data):
         if root is None:
             return None
-
         data = int(data)
-
         if self.max_room_number <= data:
             self.max_room_number -= 1
         if root.data.room_num > data:
@@ -219,8 +217,6 @@ class AVLTree:
             root.data.room_num = succ.data.room_num 
 
             root.right = self.delete(root.right, succ.data.room_num)
-
-        # Rebalance after deletion
         return self.rebalance(root)
 
 
@@ -349,7 +345,6 @@ class AVLTree:
 @memoryit
 @timeit
 def inserts(inp: list, avl: AVLTree):
-
     def create_room_group(i, j, k, l, inp):
         room_group = [0]
         for m in range(1, len(inp)):
@@ -358,21 +353,13 @@ def inserts(inp: list, avl: AVLTree):
             else:
                 room_group.append([i, j, k, l][m - 1])
         return tuple(room_group)
-
-    # Adjust input values where needed
     adjusted_inp = [inp[0]] + [max(1, x) for x in inp[1:-1]] + [inp[-1]]
-
-    # Initial insertion for i-loop only (1st room)
     for i in range(1, adjusted_inp[0] + 1):
         room_group = (1, 0, 0, 0, i)
         avl.root = avl.insert(avl.root, Room(i, room_group))
-
-    # Total iterations
     total_iterations = (
         adjusted_inp[1] * adjusted_inp[2] * adjusted_inp[3] * adjusted_inp[4]
     )
-
-    # Merged loop with n directly as the room counter
     for n in range(1, total_iterations + 1):
         i = (n // (adjusted_inp[2] * adjusted_inp[3] * adjusted_inp[4])) % adjusted_inp[
             1
@@ -380,12 +367,9 @@ def inserts(inp: list, avl: AVLTree):
         j = (n // (adjusted_inp[3] * adjusted_inp[4])) % adjusted_inp[2] + 1
         k = (n // adjusted_inp[4]) % adjusted_inp[3] + 1
         l = n % adjusted_inp[4] + 1
-
         room_group_tuple = create_room_group(i, j, k, l, inp)
-
         avl.root = avl.insert(avl.root, Room(n + adjusted_inp[0], room_group_tuple))
     avl.max_room_number = total_iterations + adjusted_inp[0]
-
     return avl.root
 
 
