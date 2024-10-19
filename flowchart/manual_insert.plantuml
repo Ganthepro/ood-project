@@ -1,0 +1,19 @@
+@startuml
+start
+
+:Call manual_insert function with room_num and avl;
+
+:Set room_group_tuple to (2, 0, 0, 0, 0);
+
+:Search for room_num in avl tree;
+if (Room found?) then (yes)
+    :Return avl.root (room already exists);
+    stop
+else (no)
+    :Insert room_num into AVL tree with room_group_tuple;
+    :Update avl.root with the result of the insertion;
+    :Return avl.root;
+endif
+
+stop
+@enduml

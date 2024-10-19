@@ -1,0 +1,17 @@
+@startuml
+start
+
+:Call update_file function;
+:Initialize traversal_result as an empty list;
+
+:Call _inorder_traversal with root and traversal_result;
+:Populate traversal_result;
+
+:Join traversal_result into a single string (result_str);
+
+:Open file with filename ("output.txt") in write mode;
+:Write result_str to the file;
+
+:Close the file;
+stop
+@enduml
