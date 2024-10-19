@@ -1,7 +1,7 @@
 @startuml
 start
 
-:Call write_file function;
+:Call update_file function;
 :Initialize traversal_result as an empty list;
 
 :Call _inorder_traversal with root and traversal_result;
